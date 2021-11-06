@@ -32,6 +32,7 @@ jobs:
 
     steps:
        - name: log into VPS and trigger deploy script
+         run: echo "Delete this"
     #     uses: appleboy/ssh-action@master
     #     with:
     #       host: ${{ secrets.HOST }}
