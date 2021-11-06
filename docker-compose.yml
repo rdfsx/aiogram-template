@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGODB_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
+    volumes:
+      - ./database:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - botnet
+
+  bot:
+    container_name: bot-template
+    build:
+      context: .
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - .:/src
+    environment:
+      MONGODB_HOSTNAME: $MONGODB_HOSTNAME
+    networks:
+      - botnet
+    depends_on:
+      - mongo
+
+networks:
+  botnet:
+    driver: bridge
