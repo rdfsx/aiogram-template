@@ -1,0 +1,22 @@
+# Cache files
+__pycache__/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Config files
+config/*.yml
+config/*.yaml
+
+# Editor-specified files
+.vscode/
+.idea/
+
+# certificates
+*.pem

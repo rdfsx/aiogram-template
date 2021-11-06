@@ -1,0 +1,19 @@
+Запускаем первый раз
+1. Создаём папку locales и пустой файл bot.pot в ней
+2. Вытаскиваем тексты из файлов (он сам находит)
+pybabel extract . -o locales/bot.pot
+3. Создаем папку для перевода на английский
+pybabel init -i locales/bot.pot -d locales -D bot -l en
+4. То же, на русский
+pybabel init -i locales/bot.pot -d locales -D bot -l ru
+5. То же, на остальные языки
+6. Переводим, а потом собираем переводы
+pybabel compile -d locales -D bot
+
+
+Обновляем переводы
+1. Вытаскиваем тексты из файлов, Добавляем текст в переведенные версии
+pybabel extract . -o locales/bot.pot
+pybabel update -d locales -D bot -i locales/bot.pot
+3. Вручную делаем переводы, а потом Собираем
+pybabel compile -d locales -D bot
