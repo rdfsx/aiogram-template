@@ -6,6 +6,12 @@ authors = ["rdfsx <m315498@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+aiogram = "^2.15"
+odmantic = {git = "https://github.com/art049/odmantic.git"}
+environs = "^9.3.4"
+loguru = "^0.5.3"
+aiogram-broadcaster = "^0.0.6"
+aiofile = "^3.7.2"
 
 [tool.poetry.dev-dependencies]
 
