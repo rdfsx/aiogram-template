@@ -5,7 +5,6 @@ from aiogram.dispatcher.middlewares import BaseMiddleware
 from odmantic import AIOEngine
 
 from app.models import ChatModel, UserModel
-from app.utils.db import MyODManticMongo
 from app.utils.notifications.new_notify import notify_new_user
 
 
@@ -15,8 +14,7 @@ class ACLMiddleware(BaseMiddleware):
         user_id = int(user.id)
         chat_id = int(chat.id)
         chat_type = chat.type if chat else "private"
-        mongo: MyODManticMongo = chat.bot["mongo"]
-        db: AIOEngine = mongo.get_engine()
+        db: AIOEngine = chat.bot["db"]
 
         if not (user_db := await db.find_one(UserModel, UserModel.id == user_id)):
             user_db = await db.save(UserModel(id=user_id, language=language))
