@@ -1,0 +1,55 @@
+name: Deploy Docker image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install
+
+      - name: Run black
+        run: poetry run black .
+      - name: Run isort
+        run: poetry run isort .
+
+  deploy:
+    needs: [linter]
+    runs-on: ubuntu-latest
+
+    # steps:
+    #   - name: log into VPS and trigger deploy script
+    #     uses: appleboy/ssh-action@master
+    #     with:
+    #       host: ${{ secrets.HOST }}
+    #       username: ${{ secrets.USERNAME }}
+    #       key: ${{ secrets.key }}
+    #       port: ${{ secrets.PORT }}
+    #       script: |
+    #         cd ${{ github.event.repository.name }}
+    #         echo "Deploying changes..."
+    #         # Pull changes from the live branch
+    #         git pull
+
+    #         # Build the image with the new changes
+    #         docker build . -t bot
+
+    #         # Shut down the existing containers
+    #         docker-compose down
+
+    #         # Start the new containers
+    #         docker-compose up -d
+    #         echo "Deployed!"
