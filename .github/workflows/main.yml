@@ -30,8 +30,8 @@ jobs:
     needs: [linter]
     runs-on: ubuntu-latest
 
-    # steps:
-    #   - name: log into VPS and trigger deploy script
+    steps:
+       - name: log into VPS and trigger deploy script
     #     uses: appleboy/ssh-action@master
     #     with:
     #       host: ${{ secrets.HOST }}
