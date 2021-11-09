@@ -11,7 +11,7 @@ A template for creating bots as quickly as possible. Written on [aiogram](https:
 - Update package lists `sudo apt-get update`;
 - Make sure Git and docker-compose are installed `apt-get install git docker-compose -y`;
 - Clone this repo via `git clone https://github.com/rdfsx/aiogram-template`;
-- Move to the directory `cd bot_template`.
+- Move to the directory `cd aiogram-template`.
 
 #### Deployment
 - Rename `.env.sample` to `.env` and replace a token placeholder and owner id with your own one;
