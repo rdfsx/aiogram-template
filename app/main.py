@@ -8,6 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app import handlers, middlewares, filters
 from app.config import Config
 from app.utils import logger
+from app.utils.clear_dirs import clear_directories
 from app.utils.db import MyODManticMongo
 from app.utils.notifications.startup_notify import notify_superusers
 from app.utils.set_bot_commands import set_commands
@@ -18,6 +19,8 @@ async def on_startup(dp):
     filters.setup(dp)
     handlers.setup_all_handlers(dp)
     logger.setup_logger()
+
+    clear_directories()
 
     mongo = MyODManticMongo()
 

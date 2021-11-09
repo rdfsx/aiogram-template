@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import NamedTuple
 
 from environs import Env
@@ -6,6 +7,10 @@ from environs import Env
 class Config(NamedTuple):
     __env = Env()
     __env.read_env()
+
+    BASE_DIR = Path(__name__).resolve().parent
+    DOWNLOADS_PATH = BASE_DIR / 'downloads'
+    UPLOADS_PATH = BASE_DIR / 'uploads'
 
     BOT_TOKEN = __env.str('BOT_TOKEN')
 

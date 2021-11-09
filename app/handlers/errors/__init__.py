@@ -1,8 +1,8 @@
 from aiogram import Dispatcher
 
-from app.handlers.errors import error_handler
+from app.handlers.errors import catcher
 
 
 def setup(dp: Dispatcher):
-    for module in (error_handler, ):
+    for module in (catcher, ):
         module.setup(dp)
