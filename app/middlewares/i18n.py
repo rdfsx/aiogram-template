@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from functools import partial
 
 import i18n
 from aiogram import types
@@ -33,8 +34,7 @@ class I18nMiddleware(BaseMiddleware):
         if "user" in data:
             language = data["user"].real_language or self.default
         i18n.load_path.append(self.path)
-        i18n.set('locale', language)
-        data["i18n"] = i18n
+        data["t"] = partial(i18n.t, locale=language)
 
     async def on_pre_process_message(self, _: types.Message, data: dict):
         await self.get_user_locale(data)

@@ -1,3 +1,4 @@
+import functools
 import types
 
 from aiogram import Dispatcher
@@ -6,8 +7,8 @@ from aiogram.types import Message
 from app.models import UserModel
 
 
-async def get_start_message(m: Message, i18n: types.ModuleType):
-    await m.answer(i18n.t("locale.start"))
+async def get_start_message(m: Message, t: functools.partial):
+    await m.answer(t("locale.start"))
 
 
 def setup(dp: Dispatcher):
