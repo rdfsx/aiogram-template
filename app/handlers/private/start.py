@@ -7,7 +7,7 @@ from app.models import UserModel
 
 
 async def get_start_message(m: Message, i18n: types.ModuleType):
-    await m.answer(i18n.t("main.hi"))
+    await m.answer(i18n.t("locale.start"))
 
 
 def setup(dp: Dispatcher):

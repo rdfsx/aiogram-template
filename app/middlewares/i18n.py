@@ -1,11 +1,8 @@
-import os
 from dataclasses import dataclass, field
 
 import i18n
-from aiogram import types, Bot
+from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
-
-from app.config import Config
 
 
 @dataclass
@@ -40,7 +37,7 @@ class I18nMiddleware(BaseMiddleware):
         data["i18n"] = i18n
 
     async def on_pre_process_message(self, _: types.Message, data: dict):
-        await self.get_user_locale(data,)
+        await self.get_user_locale(data)
 
     async def on_pre_process_callback_query(self, _: types.CallbackQuery, data: dict):
         await self.get_user_locale(data)
