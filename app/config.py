@@ -8,9 +8,10 @@ class Config(NamedTuple):
     __env = Env()
     __env.read_env()
 
-    BASE_DIR = Path(__name__).resolve().parent
+    BASE_DIR = Path(__name__).resolve().parent.parent
     DOWNLOADS_PATH = BASE_DIR / 'downloads'
     UPLOADS_PATH = BASE_DIR / 'uploads'
+    LOCALES_PATH = BASE_DIR / 'locales'
 
     BOT_TOKEN = __env.str('BOT_TOKEN')
 
