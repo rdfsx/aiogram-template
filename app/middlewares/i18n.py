@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 from functools import partial
+from pathlib import Path
 
 import i18n
-from aiogram import types
+from aiogram import types, Bot
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
 
@@ -22,19 +23,18 @@ class I18nMiddleware(BaseMiddleware):
         "ru": LanguageData("🇷🇺", "Русский"),
     }
 
-    def __init__(self, path, default='en'):
+    def __init__(self, path: Path, default='en'):
         super(I18nMiddleware, self).__init__()
 
         self.default = default
-        self.path = path
-        self.default = default
+        i18n.load_path.append(path)
+        self.i18n = i18n
 
     async def get_user_locale(self, data: dict):
         language = self.default
         if "user" in data:
             language = data["user"].real_language or self.default
-        i18n.load_path.append(self.path)
-        data["t"] = partial(i18n.t, locale=language)
+        data["t"] = partial(self.i18n.t, locale=language)
 
     async def on_pre_process_message(self, _: types.Message, data: dict):
         await self.get_user_locale(data)

@@ -1,5 +1,6 @@
 import logging
 
+import i18n
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.mongo import MongoStorage
 from aiogram.utils.executor import start_polling
