@@ -1,11 +1,13 @@
+import types
+
 from aiogram import Dispatcher
 from aiogram.types import Message
 
 from app.models import UserModel
 
 
-async def get_start_message(m: Message):
-    await m.answer(f"Привет, {m.from_user.first_name}!")
+async def get_start_message(m: Message, i18n: types.ModuleType):
+    await m.answer(i18n.t("main.hi"))
 
 
 def setup(dp: Dispatcher):
