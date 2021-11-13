@@ -16,6 +16,7 @@ class UserModel(Model):
     language: str = 'en'
     real_language: str = 'en'
     role: UserRoles = Field(default=UserRoles.new)
+    status: str = 'member'
     created_at: datetime = Field(default=datetime.now())
     updated_at: datetime = Field(default=datetime.now())
 

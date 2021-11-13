@@ -34,7 +34,7 @@ class I18nMiddleware(BaseMiddleware):
         language = self.default
         if "user" in data:
             language = data["user"].real_language or self.default
-        data["t"] = partial(self.i18n.t, locale=language)
+        data["i18n"] = partial(self.i18n.t, locale=language)
 
     async def on_pre_process_message(self, _: types.Message, data: dict):
         await self.get_user_locale(data)

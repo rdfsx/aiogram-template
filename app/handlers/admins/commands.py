@@ -7,14 +7,26 @@ from aiofile import async_open
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, InputFile, CallbackQuery
+from aiogram.utils.exceptions import UserDeactivated
 from odmantic import AIOEngine
 
 from app.models import UserModel
 
 
 async def get_amount_users(m: Message, db: AIOEngine):
+    await m.answer_chat_action("typing")
+    active_amount = await db.count(UserModel, UserModel.status == "member")
+    left_amount = await db.count(UserModel, UserModel.status == "left")
     amount = await db.count(UserModel)
-    await m.answer(f"Количество пользователей в базе данных: {amount}")
+    await m.answer(
+        "\n".join(
+            [
+                f"Участники (включая удалённые аккаунты): {active_amount}",
+                f"Выключенные: {left_amount}",
+                f"Итого: {amount}",
+            ]
+        )
+    )
 
 
 async def get_exists_users(m: Message, db: AIOEngine):
@@ -26,6 +38,8 @@ async def get_exists_users(m: Message, db: AIOEngine):
         try:
             if await bot.send_chat_action(user.id, "typing"):
                 count += 1
+        except UserDeactivated:
+            await db.delete(user)
         except Exception as e:
             logging.exception(e)
         await asyncio.sleep(.05)
