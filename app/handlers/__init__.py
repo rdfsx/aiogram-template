@@ -1,9 +1,9 @@
 from aiogram import Dispatcher
 
 from app.handlers import admins, private, errors
-from app.handlers.updates import status
+from app.handlers import updates
 
 
 def setup_all_handlers(dp: Dispatcher):
-    for module in (admins, private, errors, status):
+    for module in (admins, private, errors, updates):
         module.setup(dp)
