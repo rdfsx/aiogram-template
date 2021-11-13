@@ -1,4 +1,5 @@
 import functools
+from typing import Callable
 
 from aiogram import Dispatcher
 from aiogram.types import Message
@@ -6,7 +7,7 @@ from aiogram.types import Message
 from app.models import UserModel
 
 
-async def get_help_message(m: Message, i18n: functools.partial, user: UserModel):
+async def get_help_message(m: Message, i18n: Callable, user: UserModel):
     await m.answer(i18n("locale.help"))
 
 

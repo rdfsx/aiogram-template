@@ -58,6 +58,8 @@ async def get_exists_users(m: Message, db: AIOEngine):
         except UserDeactivated:
             await db.delete(user)
         except Exception as e:
+            user.status = "left"
+            await db.save(user)
             logging.exception(e)
         await asyncio.sleep(.05)
     await m.answer(f"Активных пользователей: {count}")

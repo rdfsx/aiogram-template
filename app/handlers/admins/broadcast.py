@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message
 from aiogram_broadcaster import MessageBroadcaster
 from odmantic import AIOEngine
 
