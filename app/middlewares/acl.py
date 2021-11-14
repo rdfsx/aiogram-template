@@ -5,7 +5,7 @@ from aiogram.dispatcher.middlewares import BaseMiddleware
 from odmantic import AIOEngine
 
 from app.models import ChatModel, UserModel
-from app.utils.notifications.new_notify import notify_new_user
+from app.utils.notifications.new_notify import notify_new_user, notify_new_group
 
 
 class ACLMiddleware(BaseMiddleware):
@@ -21,6 +21,8 @@ class ACLMiddleware(BaseMiddleware):
             await notify_new_user(user)
         if not (chat_db := await db.find_one(ChatModel, ChatModel.id == chat_id)):
             chat_db = await db.save(ChatModel(id=chat_id, type=chat_type))
+            if chat_type != types.ChatType.PRIVATE:
+                await notify_new_group(chat)
 
         data["user"]: UserModel = user_db
         data["chat"]: ChatModel = chat_db
