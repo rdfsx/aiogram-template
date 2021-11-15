@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+from datetime import datetime, timedelta
 from typing import Union
 
 from aiofile import async_open
@@ -18,12 +19,19 @@ async def get_amount_users(m: Message, db: AIOEngine):
     active_amount = await db.count(UserModel, UserModel.status == "member")
     left_amount = await db.count(UserModel, UserModel.status == "left")
     amount = await db.count(UserModel)
+    now = datetime.now()
+    last_day_amount = await db.count(UserModel, UserModel.created_at > now - timedelta(days=1))
+    last_week_amount = await db.count(UserModel, UserModel.created_at > now - timedelta(weeks=1))
+    last_month_amount = await db.count(UserModel, UserModel.created_at > now - timedelta(days=31))
     await m.answer(
         "\n".join(
             [
                 f"Участники (включая удалённые аккаунты): {active_amount}",
+                f"За последние сутки: {last_day_amount}",
+                f"За последнюю неделю: {last_week_amount}",
+                f"За последний месяц: {last_month_amount}",
                 f"Выключенные: {left_amount}",
-                f"Итого: {amount}",
+                f"Всего в бд: {amount}",
             ]
         )
     )
@@ -54,6 +62,8 @@ async def get_exists_users(m: Message, db: AIOEngine):
     for user in users:
         try:
             if await bot.send_chat_action(user.id, "typing"):
+                user.status = "member"
+                await db.save(user)
                 count += 1
         except UserDeactivated:
             await db.delete(user)
