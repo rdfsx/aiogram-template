@@ -17,9 +17,10 @@ class UserModel(Model):
     real_language: str = 'en'
     role: UserRoles = Field(default=UserRoles.new)
     status: str = 'member'
-    created_at: datetime = Field(default=datetime.now())
-    updated_at: datetime = Field(default=datetime.now())
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
     class Config:
         collection = "Users"
         json_loads = json.loads
+        parse_doc_with_default_factories = True
