@@ -7,10 +7,10 @@ from app.config import Config
 def clear_directories():
     try:
         for file in os.listdir(Config.DOWNLOADS_PATH):
-            if file != 'README.md':
+            if file != '.gitkeep':
                 os.remove(os.path.join(Config.DOWNLOADS_PATH, file))
         for file in os.listdir(Config.UPLOADS_PATH):
-            if file != 'README.md':
+            if file != '.gitkeep':
                 os.remove(os.path.join(Config.UPLOADS_PATH, file))
     except FileNotFoundError:
         return logging.error('No such directory')
