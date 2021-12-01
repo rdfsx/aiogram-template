@@ -2,12 +2,12 @@ import logging
 from typing import Optional
 
 import pymongo.errors
+from beanie import init_beanie, Document
 from motor.core import AgnosticDatabase, AgnosticCollection, AgnosticClient
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-from odmantic import AIOEngine
 
+from app import models
 from app.config import Config
-from app.utils.db.my_engine import MyAIOEngine
 
 
 class MyMongoClient:
@@ -54,11 +54,9 @@ class MyMongoClient:
         return True
 
 
-class MyODManticMongo(MyMongoClient):
+class MyBeanieMongo(MyMongoClient):
 
-    _engine: Optional[AIOEngine] = None
-
-    def get_engine(self) -> AIOEngine:
-        if not self._engine:
-            self._engine = MyAIOEngine(motor_client=self.get_client(), database=Config.MONGODB_DATABASE)
-        return self._engine
+    async def init_db(self):
+        await init_beanie(
+            database=self.get_client()[Config.MONGODB_DATABASE], document_models=models.__all__
+        )

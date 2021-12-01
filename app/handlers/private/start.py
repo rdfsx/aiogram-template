@@ -1,11 +1,7 @@
-import functools
-import types
 from typing import Callable
 
 from aiogram import Dispatcher
 from aiogram.types import Message
-
-from app.models import UserModel
 
 
 async def get_start_message(m: Message, i18n: Callable):

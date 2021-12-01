@@ -1,13 +1,12 @@
 from aiogram import Dispatcher
 from aiogram.types import ChatMemberUpdated
-from odmantic import AIOEngine
 
 from app.models import UserModel
 
 
-async def set_my_status(my_chat_member: ChatMemberUpdated, db: AIOEngine, user: UserModel):
+async def set_my_status(my_chat_member: ChatMemberUpdated, user: UserModel):
     user.status = my_chat_member.new_chat_member.status
-    await db.save(user)
+    await user.save()
 
 
 def setup(dp: Dispatcher):
