@@ -6,7 +6,6 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from .acl import ACLMiddleware
 from .clocks import ClocksMiddleware
-from .database import DatabaseMiddleware
 from .i18n import I18nMiddleware
 from .throttling import ThrottlingMiddleware
 
@@ -14,7 +13,6 @@ from .throttling import ThrottlingMiddleware
 def setup(dp: Dispatcher):
     dp.setup_middleware(LoggingMiddleware())
     dp.setup_middleware(EnvironmentMiddleware())
-    dp.setup_middleware(DatabaseMiddleware())
     dp.setup_middleware(ACLMiddleware())
     dp.setup_middleware(ThrottlingMiddleware())
     dp.setup_middleware(ClocksMiddleware())

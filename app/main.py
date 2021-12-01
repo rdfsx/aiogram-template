@@ -1,6 +1,5 @@
 import logging
 
-import i18n
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.mongo import MongoStorage
 from aiogram.utils.executor import start_polling
@@ -9,8 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app import handlers, middlewares, filters
 from app.config import Config
 from app.utils import logger
-from app.utils.clear_dirs import clear_directories
-from app.utils.db import MyODManticMongo
+from app.utils.db import MyBeanieMongo
 from app.utils.notifications.startup_notify import notify_superusers
 from app.utils.set_bot_commands import set_commands
 
@@ -22,12 +20,10 @@ async def on_startup(dp):
     handlers.setup_all_handlers(dp)
     logger.setup_logger()
 
-    clear_directories()
-
-    mongo = MyODManticMongo()
+    mongo = MyBeanieMongo()
 
     dp.bot["mongo"]: AsyncIOMotorClient = mongo
-    dp.bot["db"]: MyODManticMongo = mongo.get_engine()
+    dp.bot["db"]: MyBeanieMongo = await mongo.init_db()
 
     await notify_superusers(Config.ADMINS)
     await set_commands(dp)

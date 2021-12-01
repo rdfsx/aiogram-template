@@ -1,8 +1,8 @@
-import json
-from datetime import datetime
 from enum import Enum
 
-from odmantic import Field, Model
+from pydantic import Field
+
+from app.models.base import BaseModel
 
 
 class UserRoles(str, Enum):
@@ -11,16 +11,12 @@ class UserRoles(str, Enum):
     admin = 'admin'
 
 
-class UserModel(Model):
-    id: int = Field(primary_field=True)
+class UserModel(BaseModel):
+    id: int = Field(alias="_id")
     language: str = 'en'
     real_language: str = 'en'
     role: UserRoles = Field(default=UserRoles.new)
     status: str = 'member'
-    created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field(default_factory=datetime.now)
 
-    class Config:
-        collection = "Users"
-        json_loads = json.loads
-        parse_doc_with_default_factories = True
+    class Collection:
+        name = "UserModel"

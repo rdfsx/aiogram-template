@@ -1,12 +1,11 @@
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.markdown import quote_html
-from odmantic import AIOEngine
 
 from app.models import UserModel
 
 
-async def get_default_message(m: Message, user: UserModel, db: AIOEngine):
+async def get_default_message(m: Message, user: UserModel):
     await m.answer(quote_html(user))
 
 

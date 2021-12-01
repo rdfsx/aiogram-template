@@ -1,16 +1,11 @@
-import json
-from datetime import datetime
+from pydantic import Field
 
-from odmantic import Field, Model
+from app.models.base import BaseModel
 
 
-class ChatModel(Model):
-    id: int = Field(primary_field=True)
+class ChatModel(BaseModel):
+    id: int = Field(alias="_id")
     type: str = Field(...)
-    created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field(default_factory=datetime.now)
 
-    class Config:
-        collection = "Chats"
-        json_loads = json.loads
-        parse_doc_with_default_factories = True
+    class Collection:
+        name = "ChatModel"

@@ -2,7 +2,6 @@ from typing import Optional
 
 from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from odmantic import AIOEngine
 
 from app.models import ChatModel, UserModel
 from app.utils.notifications.new_notify import notify_new_user, notify_new_group
@@ -14,13 +13,12 @@ class ACLMiddleware(BaseMiddleware):
         user_id = int(user.id)
         chat_id = int(chat.id)
         chat_type = chat.type if chat else "private"
-        db: AIOEngine = chat.bot["db"]
 
-        if not (user_db := await db.find_one(UserModel, UserModel.id == user_id)):
-            user_db = await db.save(UserModel(id=user_id, language=language))
+        if not (user_db := await UserModel.find_one(UserModel.id == user_id)):
+            user_db = await UserModel(id=user_id, language=language).create()
             await notify_new_user(user)
-        if not (chat_db := await db.find_one(ChatModel, ChatModel.id == chat_id)):
-            chat_db = await db.save(ChatModel(id=chat_id, type=chat_type))
+        if not (chat_db := await ChatModel.find_one(ChatModel.id == chat_id)):
+            chat_db = await ChatModel(id=chat_id, type=chat_type).create()
             if chat_type != types.ChatType.PRIVATE:
                 await notify_new_group(chat)
 
