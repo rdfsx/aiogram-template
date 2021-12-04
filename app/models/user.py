@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import Field
 
-from app.models.base import BaseModel
+from app.models.base import TimeBaseModel
 
 
 class UserRoles(str, Enum):
@@ -11,7 +11,7 @@ class UserRoles(str, Enum):
     admin = 'admin'
 
 
-class UserModel(BaseModel):
+class UserModel(TimeBaseModel):
     id: int = Field(alias="_id")
     language: str = 'en'
     real_language: str = 'en'

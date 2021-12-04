@@ -1,9 +1,9 @@
 from pydantic import Field
 
-from app.models.base import BaseModel
+from app.models.base import TimeBaseModel
 
 
-class ChatModel(BaseModel):
+class ChatModel(TimeBaseModel):
     id: int = Field(alias="_id")
     type: str = Field(...)
 
