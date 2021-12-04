@@ -3,7 +3,7 @@ from .chat import ChatModel
 from .user import UserModel, UserRoles
 
 
-__all__ = [
+__models__ = [
     TimeBaseModel,
     ChatModel,
     UserModel,
