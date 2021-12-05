@@ -1,5 +1,7 @@
+from datetime import datetime
 from enum import Enum
 
+from beanie import before_event, Insert, Replace, SaveChanges
 from pydantic import Field
 
 from app.models.base import TimeBaseModel
@@ -20,3 +22,7 @@ class UserModel(TimeBaseModel):
 
     class Collection:
         name = "UserModel"
+
+    @before_event([Insert, Replace, SaveChanges])
+    def set_updated_at(self):
+        self.updated_at = datetime.utcnow()

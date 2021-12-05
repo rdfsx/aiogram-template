@@ -4,7 +4,6 @@ from .user import UserModel, UserRoles
 
 
 __models__ = [
-    TimeBaseModel,
     ChatModel,
     UserModel,
 ]
