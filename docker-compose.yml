@@ -5,6 +5,7 @@ services:
   mongo:
     container_name: mongo
     image: mongo
+    command: mongod --port 27017
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: $MONGODB_USERNAME

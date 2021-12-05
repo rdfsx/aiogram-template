@@ -57,6 +57,6 @@ class MyMongoClient:
 class MyBeanieMongo(MyMongoClient):
 
     async def init_db(self):
-        await init_beanie(
-            database=self.get_client()[Config.MONGODB_DATABASE], document_models=models.__models__
-        )
+        logging.info(f"Initializing database {self._db_name} {self._uri}")
+        await init_beanie(database=self.get_db(), document_models=models.__models__)
+        logging.info(f"Successfully initialized.")

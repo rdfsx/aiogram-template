@@ -3,7 +3,6 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.mongo import MongoStorage
 from aiogram.utils.executor import start_polling
-from motor.motor_asyncio import AsyncIOMotorClient
 
 from app import handlers, middlewares, filters
 from app.config import Config
@@ -21,9 +20,7 @@ async def on_startup(dp):
     logger.setup_logger()
 
     mongo = MyBeanieMongo()
-
-    dp.bot["mongo"]: AsyncIOMotorClient = mongo
-    dp.bot["db"]: MyBeanieMongo = await mongo.init_db()
+    await mongo.init_db()
 
     await notify_superusers(Config.ADMINS)
     await set_commands(dp)
