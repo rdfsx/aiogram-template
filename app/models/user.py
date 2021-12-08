@@ -14,7 +14,7 @@ class UserRoles(str, Enum):
 
 
 class UserModel(TimeBaseModel):
-    id: int = Field(alias="_id")
+    id: int = Field(...)
     language: str = 'en'
     real_language: str = 'en'
     role: UserRoles = Field(default=UserRoles.new)
