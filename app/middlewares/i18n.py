@@ -3,7 +3,7 @@ from functools import partial
 from pathlib import Path
 
 import i18n
-from aiogram import types, Bot
+from aiogram import types
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
 
