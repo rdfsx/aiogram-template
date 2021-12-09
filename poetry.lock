@@ -109,7 +109,7 @@ pytz = ">=2015.7"
 
 [[package]]
 name = "beanie"
-version = "1.8.0"
+version = "1.8.4"
 description = "Asynchronous Python ODM for MongoDB"
 category = "main"
 optional = false
@@ -472,8 +472,8 @@ babel = [
     {file = "Babel-2.9.1.tar.gz", hash = "sha256:bc0c176f9f6a994582230df350aa6e05ba2ebe4b3ac317eab29d9be5d2768da0"},
 ]
 beanie = [
-    {file = "beanie-1.8.0-py3-none-any.whl", hash = "sha256:fa6a015b33505a10a858a16b8c726c0cf3e82ccf7a86b475f3689fc1352db893"},
-    {file = "beanie-1.8.0.tar.gz", hash = "sha256:255ab6574c23ec80624f538d76b726117a31b29f2f5ad69d197e454ca5a17438"},
+    {file = "beanie-1.8.4-py3-none-any.whl", hash = "sha256:67f113c71ff92f8b627fc030a29d142014516396804cbf4d970ce893154c99b9"},
+    {file = "beanie-1.8.4.tar.gz", hash = "sha256:1edd6c6f67b9f39570c1d8c7928cd7b59288b0936ea8b8e65b74a1ea8bbeae1b"},
 ]
 caio = [
     {file = "caio-0.9.3-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:966575da339c004c2410b4a92a6b7639659a6e90f45849dafa839e9dd2177c77"},
