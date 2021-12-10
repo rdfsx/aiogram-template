@@ -11,4 +11,5 @@ class TimeBaseModel(Document):
 
     @before_event([Insert, Replace, SaveChanges])
     def set_updated_at(self):
-        self.updated_at = datetime.utcnow()
+        if getattr(self, "updated_at", None):
+            self.updated_at = datetime.utcnow()
