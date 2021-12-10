@@ -1,4 +1,4 @@
-from aiogram import types, Bot
+from aiogram import types
 from aiogram.dispatcher.handler import current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 
@@ -12,9 +12,8 @@ class ClocksMiddleware(BaseMiddleware):
         if not allow:
             return
         chat_id = int(chat.id)
-        bot = Bot.get_current()
-        msg = await bot.send_message(chat_id, "⏳")
-        await bot.send_chat_action(chat_id, "typing")
+        msg = await chat.bot.send_message(chat_id, "⏳")
+        await chat.bot.send_chat_action(chat_id, "typing")
 
         data["clocks_msg"]: types.Message = msg
 
