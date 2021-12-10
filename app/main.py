@@ -28,7 +28,8 @@ async def on_startup(dp):
 
 async def on_shutdown(dp):
     logging.warning("Shutting down..")
-    await dp.bot.session.close()
+    session = await dp.bot.get_session()
+    await session.close()
     await dp.storage.close()
     await dp.storage.wait_closed()
     if mongo := dp.bot.get('mongo', None):
