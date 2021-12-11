@@ -15,7 +15,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         self.prefix = key_prefix
         super(ThrottlingMiddleware, self).__init__()
 
-    async def throttle(self, target: Union[types.Message, types.CallbackQuery]):
+    async def throttle(self, ctx: Union[types.Message, types.CallbackQuery]):
         handler = current_handler.get()
         dispatcher = Dispatcher.get_current()
         if not handler:
@@ -26,13 +26,13 @@ class ThrottlingMiddleware(BaseMiddleware):
         try:
             await dispatcher.throttle(key, rate=limit)
         except Throttled as t:
-            await self.target_throttled(target, t, dispatcher, key)
+            await self.target_throttled(ctx, t, dispatcher, key)
             raise CancelHandler()
 
     @staticmethod
-    async def target_throttled(target: Union[types.Message, types.CallbackQuery],
+    async def target_throttled(ctx: Union[types.Message, types.CallbackQuery],
                                throttled: Throttled, dispatcher: Dispatcher, key: str):
-        msg = target.message if isinstance(target, types.CallbackQuery) else target
+        msg = ctx.message if isinstance(ctx, types.CallbackQuery) else ctx
         delta = throttled.rate - throttled.delta
 
         if throttled.exceeded_count == 2:
@@ -47,8 +47,8 @@ class ThrottlingMiddleware(BaseMiddleware):
         if thr.exceeded_count == throttled.exceeded_count:
             await msg.reply("Все, теперь отвечаю.")
 
-    async def on_process_message(self, message, data):
-        await self.throttle(message)
+    async def on_process_message(self, m: types.Message, _):
+        await self.throttle(m)
 
-    async def on_process_callback_query(self, call, data):
-        await self.throttle(call)
+    async def on_process_callback_query(self, q: types.CallbackQuery, _):
+        await self.throttle(q)
