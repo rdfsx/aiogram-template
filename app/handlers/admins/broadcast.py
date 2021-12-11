@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 from aiogram_broadcaster import MessageBroadcaster
 
-from app.keyboards.inline import CancelKb
+from app.keyboards.admin.inline import CancelKb
 from app.models import UserModel
 from app.states.admin_states import BroadcastAdmin
 
