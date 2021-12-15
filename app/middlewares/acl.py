@@ -12,11 +12,10 @@ class ACLMiddleware(BaseMiddleware):
     async def setup_chat(data: dict, user: types.User, language: str, chat: Optional[types.Chat] = None):
         user_id = int(user.id)
         chat_id = int(chat.id)
-        chat_type = chat.type if chat else "private"
-
+        chat_type = chat.type if chat else types.ChatType.PRIVATE
         user_db = None
 
-        if chat_type == "private" and not (user_db := await UserModel.find_one(UserModel.id == user_id)):
+        if chat_type == types.ChatType.PRIVATE and not (user_db := await UserModel.find_one(UserModel.id == user_id)):
             user_db = await UserModel(id=user_id, language=language).create()
             await notify_new_user(user)
         if not (chat_db := await ChatModel.find_one(ChatModel.id == chat_id)):
