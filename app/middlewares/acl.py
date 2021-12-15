@@ -14,7 +14,9 @@ class ACLMiddleware(BaseMiddleware):
         chat_id = int(chat.id)
         chat_type = chat.type if chat else "private"
 
-        if not (user_db := await UserModel.find_one(UserModel.id == user_id)):
+        user_db = None
+
+        if chat_type == "private" and not (user_db := await UserModel.find_one(UserModel.id == user_id)):
             user_db = await UserModel(id=user_id, language=language).create()
             await notify_new_user(user)
         if not (chat_db := await ChatModel.find_one(ChatModel.id == chat_id)):
