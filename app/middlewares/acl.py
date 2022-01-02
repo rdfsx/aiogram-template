@@ -32,3 +32,7 @@ class ACLMiddleware(BaseMiddleware):
     async def on_pre_process_callback_query(self, query: types.CallbackQuery, data: dict):
         await self.setup_chat(data, query.from_user, query.from_user.language_code,
                               query.message.chat if query.message else None)
+
+    async def on_pre_process_my_chat_member(self, my_chat_member: types.ChatMemberUpdated, data: dict):
+        await self.setup_chat(data, my_chat_member.from_user, my_chat_member.from_user.language_code,
+                              my_chat_member.chat)
