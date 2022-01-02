@@ -14,7 +14,6 @@ from app.utils.set_bot_commands import set_commands
 
 async def on_startup(dp):
     middlewares.setup(dp)
-    middlewares.setup_i18n(dp, Config.LOCALES_PATH)
     filters.setup(dp)
     handlers.setup_all_handlers(dp)
     logger.setup_logger()

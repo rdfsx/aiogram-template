@@ -9,7 +9,6 @@ class Config(NamedTuple):
     __env.read_env()
 
     BASE_DIR = Path(__name__).resolve().parent.parent
-    LOCALES_PATH = BASE_DIR / 'locales'
 
     BOT_TOKEN = __env.str('BOT_TOKEN')
 
