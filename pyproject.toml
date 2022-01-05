@@ -9,7 +9,6 @@ python = "^3.9"
 aiogram = "^2.15"
 environs = "^9.3.4"
 loguru = "^0.5.3"
-aiogram-broadcaster = "^0.0.6"
 aiofile = "^3.7.2"
 PyYAML = "^6.0"
 python-i18n = {extras = ["YAML"], version = "^0.3.9"}
