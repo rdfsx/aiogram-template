@@ -14,6 +14,7 @@ beanie = "^1.8.12"
 uvloop = "^0.16.0"
 ujson = "^5.1.0"
 aiohttp = {extras = ["speedups"], version = "^3.8.1"}
+aiogram-broadcaster = "^0.0.7"
 
 [tool.poetry.dev-dependencies]
 

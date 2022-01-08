@@ -41,6 +41,17 @@ fast = ["uvloop (>=0.16.0,<0.17.0)", "ujson (>=1.35)"]
 proxy = ["aiohttp-socks (>=0.5.3,<0.6.0)"]
 
 [[package]]
+name = "aiogram-broadcaster"
+version = "0.0.7"
+description = "Simple and lightweight library based on aiogram for creating telegram mailings"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+aiogram = ">=2.11,<3.0"
+
+[[package]]
 name = "aiohttp"
 version = "3.8.1"
 description = "Async http client/server framework (asyncio)"
@@ -420,7 +431,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "ebe259f207649db7188e4f1ffd638d5685f5ee4b031589439c6c4787713e5be5"
+content-hash = "4f2cb19fff724106085c50f0c184ccd4d795cc0bbd484de5410645a92147f2b0"
 
 [metadata.files]
 aiodns = [
@@ -434,6 +445,10 @@ aiofile = [
 aiogram = [
     {file = "aiogram-2.18-py3-none-any.whl", hash = "sha256:ffe51749cdc92d24db74a2636b5ca8e6a5a3e504d01f47b47a206d93ea6cad18"},
     {file = "aiogram-2.18.tar.gz", hash = "sha256:d08398f317ffdfb5436ff20211d597d1777cb00967d24a8f57e47a2303ad0965"},
+]
+aiogram-broadcaster = [
+    {file = "aiogram_broadcaster-0.0.7-py3-none-any.whl", hash = "sha256:e372fc5560fd286bd78e45e96bd5ea212dd5171a84ca3fe2fc81c0f2d5d42775"},
+    {file = "aiogram_broadcaster-0.0.7.tar.gz", hash = "sha256:739ab68abc39576084c2150d5c577c4f00dded238406f2238e440451da352ec6"},
 ]
 aiohttp = [
     {file = "aiohttp-3.8.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:1ed0b6477896559f17b9eaeb6d38e07f7f9ffe40b9f0f9627ae8b9926ae260a8"},
