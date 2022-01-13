@@ -8,7 +8,6 @@ from app.config import Config
 
 async def notify_new_user(user: types.User) -> None:
     bot = Bot.get_current()
-    user = await bot.get_chat(chat_id=user.id)
     pics = await bot.get_user_profile_photos(user.id)
     txt = [
         "#new_user",
@@ -16,11 +15,9 @@ async def notify_new_user(user: types.User) -> None:
         f'id: <a href="tg://user?id={user.id}">{user.id}</a>',
         f"username: @{user.username}",
     ]
-    try:
+    photo = None
+    if pics and pics.total_count > 0:
         photo = pics.photos[0][-1].file_id
-    except Exception as e:
-        logging.error(e)
-        photo = ''
     for admin in Config.ADMINS:
         if photo:
             await bot.send_photo(admin, photo=photo, caption=('\n'.join(txt)))
