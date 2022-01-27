@@ -9,7 +9,7 @@ from app.utils.notifications.new_notify import notify_new_user, notify_new_group
 
 class ACLMiddleware(BaseMiddleware):
     @staticmethod
-    async def setup_chat(data: dict, user: types.User, language: str, chat: Optional[types.Chat] = None):
+    async def setup_chat(data: dict, user: types.User, language: str, chat: types.Chat):
         user_id = int(user.id)
         chat_id = int(chat.id)
         chat_type = chat.type if chat else types.ChatType.PRIVATE
@@ -23,15 +23,15 @@ class ACLMiddleware(BaseMiddleware):
             if chat_type != types.ChatType.PRIVATE:
                 await notify_new_group(chat)
 
-        data["user"]: UserModel = user_db
-        data["chat"]: ChatModel = chat_db
+        data["user"] = user_db
+        data["chat"] = chat_db
 
     async def on_pre_process_message(self, message: types.Message, data: dict):
         await self.setup_chat(data, message.from_user, message.from_user.language_code, message.chat)
 
     async def on_pre_process_callback_query(self, query: types.CallbackQuery, data: dict):
         await self.setup_chat(data, query.from_user, query.from_user.language_code,
-                              query.message.chat if query.message else None)
+                              query.message.chat)
 
     async def on_pre_process_my_chat_member(self, my_chat_member: types.ChatMemberUpdated, data: dict):
         await self.setup_chat(data, my_chat_member.from_user, my_chat_member.from_user.language_code,

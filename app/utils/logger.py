@@ -21,7 +21,7 @@ class InterceptHandler(logging.Handler):
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
-def setup_logger(level: Union[str, int] = "INFO", ignored: List[str] = ""):
+def setup_logger(level: Union[str, int] = "INFO", ignored: List[str]=[""]):
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.getLevelName(level))
     for ignore in ignored:
         logger.disable(ignore)

@@ -15,7 +15,7 @@ class ClocksMiddleware(BaseMiddleware):
         msg = await chat.bot.send_message(chat_id, "⏳")
         await chat.bot.send_chat_action(chat_id, "typing")
 
-        data["clocks_msg"]: types.Message = msg
+        data["clocks_msg"] = msg
 
     @staticmethod
     async def close_chat(data: dict):
