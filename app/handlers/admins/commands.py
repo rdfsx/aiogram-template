@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from aiofile import async_open
-from aiogram import Dispatcher, Bot
+from aiogram import Bot, Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import Message, InputFile, CallbackQuery
@@ -94,11 +94,11 @@ async def cancel_all(ctx: Union[CallbackQuery, Message], state: FSMContext):
     await msg.answer('Отменено.')
 
 
-def setup(dp: Dispatcher):
-    dp.message.register(get_amount_users, commands="amount")
-    dp.message.register(get_amount_chats, commands="chat_amount")
-    dp.message.register(get_amount_chats_users, commands="chat_users_amount")
-    dp.message.register(get_exists_users, commands="exists_amount")
-    dp.message.register(write_users_to_file, commands="users_file")
-    dp.callback_query.register(cancel_all, text='cancel', state='*')
-    dp.message.register(cancel_all, commands="/cancel", state='*')
+def setup(router: Router):
+    router.message.register(get_amount_users, commands="amount")
+    router.message.register(get_amount_chats, commands="chat_amount")
+    router.message.register(get_amount_chats_users, commands="chat_users_amount")
+    router.message.register(get_exists_users, commands="exists_amount")
+    router.message.register(write_users_to_file, commands="users_file")
+    router.callback_query.register(cancel_all, text='cancel', state='*')
+    router.message.register(cancel_all, commands="/cancel", state='*')

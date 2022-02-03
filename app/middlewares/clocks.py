@@ -18,6 +18,7 @@ class ClocksMiddleware(BaseMiddleware):
         chat: Optional[Chat] = data.get("event_chat")
 
         allow = hasattr(real_handler.callback, "clocks")
+
         bot: Bot = data['bot']
 
         if not allow:

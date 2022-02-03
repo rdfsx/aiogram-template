@@ -1,4 +1,4 @@
-from aiogram import Dispatcher, types
+from aiogram import types, Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import Message
 
@@ -28,11 +28,11 @@ async def start_broadcasting(msg: Message, state: FSMContext):
             await red_msg.edit_text(f"Отправлено {count} сообщений.")
         return count
 
-    amount = await broadcast_smth(chats, send_copy, message=msg, red_msg=info_msg)
+    amount = await broadcast_smth(chats, send_copy, True, 'id', message=msg, red_msg=info_msg)
 
     await info_msg.edit_text(f"Рассылка завершена. Отправлено {amount} сообщений.")
 
 
-def setup(dp: Dispatcher):
-    dp.message.register(start_broadcast, commands="broadcast")
-    dp.message.register(start_broadcasting, state=BroadcastAdmin.BROADCAST, content_types=types.ContentType.ANY)
+def setup(router: Router):
+    router.message.register(start_broadcast, commands="broadcast")
+    router.message.register(start_broadcasting, state=BroadcastAdmin.BROADCAST, content_types=types.ContentType.ANY)

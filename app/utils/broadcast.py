@@ -12,10 +12,15 @@ logger = logging.getLogger(__name__)
 async def broadcast_smth(chats: AsyncGenerator[int] | Any,
                          action: Callable[[int, Any, ...], Awaitable[Any, int]],
                          with_counter: bool = True,
+                         attribute: str | None = None,
                          **func_kwargs: Any) -> int:
     i = 0
 
-    async for chat_id in chats:
+    async for chat in chats:
+        if attribute:
+            chat_id = getattr(chat, attribute)
+        else:
+            chat_id = chat
 
         try:
             if with_counter:
