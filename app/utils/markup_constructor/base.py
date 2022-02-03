@@ -3,9 +3,7 @@ from typing import List, Union
 
 from aiogram.types import (
     InlineKeyboardButton,
-    InlineKeyboardMarkup,
     KeyboardButton,
-    ReplyKeyboardMarkup,
 )
 
 
@@ -60,7 +58,7 @@ class BaseMarkupConstructor(ABC):
     @staticmethod
     def create_keyboard_layout(
         buttons: List[Union[InlineKeyboardButton, KeyboardButton]], scheme: List[int]
-    ) -> List[List[Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]]]:
+    ) -> List[List[Union[InlineKeyboardButton, KeyboardButton]]]:
         if sum(scheme) != len(buttons):
             raise ValueError("The number of buttons does not match the scheme")
         keyboard = []

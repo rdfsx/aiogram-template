@@ -1,6 +1,4 @@
 from aiogram import Dispatcher
-from aiogram.contrib.middlewares.environment import EnvironmentMiddleware
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from .acl import ACLMiddleware
 from .clocks import ClocksMiddleware
@@ -8,8 +6,8 @@ from .throttling import ThrottlingMiddleware
 
 
 def setup(dp: Dispatcher):
-    dp.setup_middleware(LoggingMiddleware())
-    dp.setup_middleware(EnvironmentMiddleware())
-    dp.setup_middleware(ACLMiddleware())
-    dp.setup_middleware(ThrottlingMiddleware())
-    dp.setup_middleware(ClocksMiddleware())
+    dp.message.middleware(ThrottlingMiddleware())
+    # dp.callback_query.middlewares(ThrottlingMiddleware())
+    dp.message.middleware(ClocksMiddleware())
+    dp.callback_query.middleware(ClocksMiddleware())
+    dp.update.outer_middleware(ACLMiddleware())

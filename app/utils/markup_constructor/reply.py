@@ -10,22 +10,21 @@ class ReplyMarkupConstructor(BaseMarkupConstructor):
     """
     Class for creating reply keyboards
     Usage example:
-        class ExampleMarkup(InlineMarkupConstructor):
-            callback_data = CallbackData('test', 'number')
+        class ExampleReplyMarkup(ReplyMarkupConstructor):
             def get(self):
                 schema = [1, 2, 3, 3]
                 actions = [
-                    {'text': '1',},
+                    {'text': '1', },
                     {'text': '2', 'contact': True},
                     {'text': '3', 'location': True},
-                    {'text': '4', 'pool': True},
+                    {'text': '4', 'poll': True},
                     {'text': '5', 'request_contact': True},
                     {'text': '6', 'request_location': True},
-                    {'text': '7', 'request_pool': None},
-                    {'text': '8', 'request_pool': "regular"},
-                    {'text': '9', 'request_pool': KeyboardButtonPollType("regular")},
+                    {'text': '7', 'request_poll': None},
+                    {'text': '8', 'request_poll': "regular"},
+                    {'text': '9', 'request_poll': KeyboardButtonPollType(type="regular")},
                 ]
-                return self.generate(actions, schema)
+                return self.markup(actions, schema)
     """
 
     aliases = {
@@ -51,7 +50,7 @@ class ReplyMarkupConstructor(BaseMarkupConstructor):
     @staticmethod
     def _set_poll_property(button_data: dict) -> dict:
         with suppress(KeyError):
-            if not isinstance(button_data["request_poll", KeyboardButtonPollType]):
+            if not isinstance(button_data["request_poll"], KeyboardButtonPollType):
                 raise ValueError(
                     'Field "request_poll" must be of type KeyboardButtonPollType, str or None'
                 )
@@ -71,16 +70,15 @@ class ReplyMarkupConstructor(BaseMarkupConstructor):
         one_time_keyboard: bool = None,
         selective: bool = None,
     ) -> ReplyKeyboardMarkup:
-        markup = ReplyKeyboardMarkup(
-            resize_keyboard=resize_keyboard,
-            one_time_keyboard=one_time_keyboard,
-            selective=selective,
-        )
-        markup.row_width = max(schema)
         buttons = list()
         for action in actions:
             self._replace_aliases(action)
             button_data = self._set_poll_property(self._check_properties(action))
             buttons.append(KeyboardButton(**button_data))
-        markup.keyboard = self.create_keyboard_layout(buttons, schema)
+        markup = ReplyKeyboardMarkup(
+            keyboard=self.create_keyboard_layout(buttons, schema),
+            resize_keyboard=resize_keyboard,
+            one_time_keyboard=one_time_keyboard,
+            selective=selective,
+        )
         return markup

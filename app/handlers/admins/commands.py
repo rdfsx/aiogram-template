@@ -5,16 +5,16 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from aiofile import async_open
-from aiogram import Dispatcher
-from aiogram.dispatcher import FSMContext
+from aiogram import Dispatcher, Bot
+from aiogram.dispatcher.fsm.context import FSMContext
+from aiogram.exceptions import TelegramAPIError
 from aiogram.types import Message, InputFile, CallbackQuery
-from aiogram.utils.exceptions import UserDeactivated
 
 from app.models import UserModel, ChatModel
 
 
-async def get_amount_users(m: Message):
-    await m.answer_chat_action("typing")
+async def get_amount_users(msg: Message, bot: Bot):
+    await bot.send_chat_action(msg.chat.id, "typing")
     active_amount = await UserModel.find(UserModel.status == "member").count()
     left_amount = await UserModel.find(UserModel.status == "left").count()
     amount = await UserModel.find_all().count()
@@ -22,7 +22,7 @@ async def get_amount_users(m: Message):
     last_day_amount = await UserModel.find(UserModel.created_at > (now - timedelta(days=1))).count()
     last_week_amount = await UserModel.find(UserModel.created_at > (now - timedelta(weeks=1))).count()
     last_month_amount = await UserModel.find(UserModel.created_at > (now - timedelta(days=31))).count()
-    await m.answer(
+    await msg.answer(
         "\n".join(
             [
                 f"Участники (включая удалённые аккаунты): {active_amount}",
@@ -36,26 +36,25 @@ async def get_amount_users(m: Message):
     )
 
 
-async def get_amount_chats(m: Message):
+async def get_amount_chats(msg: Message):
     amount = await ChatModel.find(ChatModel.type != "private").count()
-    await m.answer(f"Количество групп в базе данных: {amount}")
+    await msg.answer(f"Количество групп в базе данных: {amount}")
 
 
-async def get_amount_chats_users(m: Message):
-    await m.answer("Начинаем подсчет...")
+async def get_amount_chats_users(msg: Message, bot: Bot):
+    await msg.answer("Начинаем подсчет...")
     amount = 0
     for group in await ChatModel.find(ChatModel.type != "private").to_list():
         try:
-            amount += await m.bot.get_chat_member_count(group.id)
+            amount += await bot.get_chat_member_count(group.id)
         except Exception as e:
             logging.error(e)
             await group.delete()
-    await m.answer(f"Количество пользователей в группах: {amount}")
+    await msg.answer(f"Количество пользователей в группах: {amount}")
 
 
-async def get_exists_users(m: Message):
+async def get_exists_users(m: Message, bot: Bot):
     await m.answer("Начинаем подсчет...")
-    bot = m.bot
     users = await UserModel.find_all().to_list()
     count = 0
     for user in users:
@@ -64,7 +63,7 @@ async def get_exists_users(m: Message):
                 user.status = "member"
                 await user.save()
                 count += 1
-        except UserDeactivated:
+        except TelegramAPIError:  # TODO check if it working
             await user.delete()
         except Exception as e:
             user.status = "left"
@@ -86,7 +85,7 @@ async def write_users_to_file(m: Message):
 
 
 async def cancel_all(ctx: Union[CallbackQuery, Message], state: FSMContext):
-    await state.reset_state()
+    await state.clear()
     msg = ctx
     if isinstance(ctx, CallbackQuery):
         await ctx.answer()
@@ -96,10 +95,10 @@ async def cancel_all(ctx: Union[CallbackQuery, Message], state: FSMContext):
 
 
 def setup(dp: Dispatcher):
-    dp.register_message_handler(get_amount_users, commands="amount", is_admin=True)
-    dp.register_message_handler(get_amount_chats, commands="chat_amount", is_admin=True)
-    dp.register_message_handler(get_amount_chats_users, commands="chat_users_amount", is_admin=True)
-    dp.register_message_handler(get_exists_users, commands="exists_amount", is_admin=True)
-    dp.register_message_handler(write_users_to_file, commands="users_file", is_admin=True)
-    dp.register_callback_query_handler(cancel_all, text='cancel', state='*', is_admin=True)
-    dp.register_message_handler(cancel_all, commands="/cancel", state='*', is_admin=True)
+    dp.message.register(get_amount_users, commands="amount")
+    dp.message.register(get_amount_chats, commands="chat_amount")
+    dp.message.register(get_amount_chats_users, commands="chat_users_amount")
+    dp.message.register(get_exists_users, commands="exists_amount")
+    dp.message.register(write_users_to_file, commands="users_file")
+    dp.callback_query.register(cancel_all, text='cancel', state='*')
+    dp.message.register(cancel_all, commands="/cancel", state='*')

@@ -1,4 +1,5 @@
 from pydantic import Field
+from pydantic.main import BaseModel
 
 from app.models.base import TimeBaseModel
 
@@ -9,3 +10,7 @@ class ChatModel(TimeBaseModel):
 
     class Collection:
         name = "ChatModel"
+
+
+class ChatModelShortView(BaseModel):
+    id: int = ...

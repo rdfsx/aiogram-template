@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 import pymongo.errors
-from beanie import init_beanie, Document
+from beanie import init_beanie
 from motor.core import AgnosticDatabase, AgnosticCollection, AgnosticClient
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 

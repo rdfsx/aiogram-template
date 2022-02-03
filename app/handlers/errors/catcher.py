@@ -14,4 +14,4 @@ async def errors_handler(update: Update, exception):
 
 
 def setup(dp: Dispatcher):
-    dp.register_errors_handler(errors_handler)
+    dp.errors.register(errors_handler)

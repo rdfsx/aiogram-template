@@ -7,4 +7,4 @@ async def get_start_message(m: Message):
 
 
 def setup(dp: Dispatcher):
-    dp.register_message_handler(get_start_message, commands="start")
+    dp.message.register(get_start_message, commands="start")

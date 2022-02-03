@@ -1,54 +1,46 @@
-import asyncio
-from typing import Union
+import logging
+from typing import Any, Awaitable, Callable, Dict, Optional
 
-from aiogram import types, Dispatcher
-from aiogram.dispatcher import DEFAULT_RATE_LIMIT
-from aiogram.dispatcher.handler import CancelHandler, current_handler
-from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.utils.exceptions import Throttled
+from aiogram import BaseMiddleware
+from aiogram.dispatcher.event.handler import HandlerObject
+from aiogram.types import TelegramObject, User
+from aiolimiter import AsyncLimiter
+
+logger = logging.getLogger(__name__)
 
 
 class ThrottlingMiddleware(BaseMiddleware):
+    def __init__(self, default_rate: float = .1) -> None:
+        self.limiters: Dict[str, AsyncLimiter] = {}
+        self.default_rate = default_rate
 
-    def __init__(self, limit=DEFAULT_RATE_LIMIT, key_prefix='antiflood_'):
-        self.rate_limit = limit
-        self.prefix = key_prefix
-        super(ThrottlingMiddleware, self).__init__()
+    async def __call__(
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: Dict[str, Any],
+    ) -> Any:
+        user: Optional[User] = data.get("event_from_user")
 
-    async def throttle(self, ctx: Union[types.Message, types.CallbackQuery]):
-        handler = current_handler.get()
-        dispatcher = Dispatcher.get_current()
-        if not handler:
-            return
-        limit = getattr(handler, 'throttling_rate_limit', self.rate_limit)
-        key = getattr(handler, 'throttling_key', f"{self.prefix}_{handler.__name__}")
+        real_handler: HandlerObject = data["handler"]
 
-        try:
-            await dispatcher.throttle(key, rate=limit)
-        except Throttled as t:
-            await self.target_throttled(ctx, t, dispatcher, key)
-            raise CancelHandler()
+        throttling_key = getattr(real_handler, "throttling_key", f"{real_handler.callback}")
+        throttling_rate = getattr(real_handler, "throttling_rate", self.default_rate)
 
-    @staticmethod
-    async def target_throttled(ctx: Union[types.Message, types.CallbackQuery],
-                               throttled: Throttled, dispatcher: Dispatcher, key: str):
-        msg = ctx.message if isinstance(ctx, types.CallbackQuery) else ctx
-        delta = throttled.rate - throttled.delta
+        if not user:
+            return await handler(event, data)
 
-        if throttled.exceeded_count == 2:
-            await msg.reply('Слишком Часто! Давай не так быстро')
-            return
-        elif throttled.exceeded_count == 3:
-            await msg.reply(f'Всё. Больше не отвечу, пока не пройдет {round(delta, 3)} секунд')
-            return
-        await asyncio.sleep(delta)
+        limiter = self.limiters.setdefault(
+            f"{user.id}:{throttling_key}", AsyncLimiter(1, throttling_rate)
+        )
 
-        thr = await dispatcher.check_key(key)
-        if thr.exceeded_count == throttled.exceeded_count:
-            await msg.reply("Все, теперь отвечаю.")
-
-    async def on_process_message(self, m: types.Message, _):
-        await self.throttle(m)
-
-    async def on_process_callback_query(self, q: types.CallbackQuery, _):
-        await self.throttle(q)
+        if limiter.has_capacity():
+            async with limiter:
+                return await handler(event, data)
+        else:
+            logger.info(
+                "Throttled for user=%d, key=%s, rate=%d",
+                user.id,
+                throttling_key,
+                throttling_rate,
+            )

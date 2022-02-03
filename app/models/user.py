@@ -1,6 +1,7 @@
 from enum import Enum
 
 from pydantic import Field
+from pydantic.main import BaseModel
 
 from app.models.base import TimeBaseModel
 
@@ -20,3 +21,7 @@ class UserModel(TimeBaseModel):
 
     class Collection:
         name = "UserModel"
+
+
+class UserModelShortView(UserModel):
+    id: int

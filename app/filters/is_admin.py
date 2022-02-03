@@ -1,14 +1,10 @@
 from aiogram import types
-from aiogram.dispatcher.filters import BoundFilter
+from aiogram.dispatcher.filters import BaseFilter
 
 from app.config import Config
 
 
-class AdminFilter(BoundFilter):
-    key = 'is_admin'
+class AdminFilter(BaseFilter):
 
-    def __init__(self, is_admin):
-        self.is_admin = is_admin
-
-    async def check(self, message: types.Message):
-        return str(message.from_user.id) in Config.ADMINS
+    async def __call__(self, event_from_user: types.User) -> bool:
+        return str(event_from_user.id) in Config.ADMINS

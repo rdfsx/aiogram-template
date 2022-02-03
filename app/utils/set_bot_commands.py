@@ -1,25 +1,25 @@
-from aiogram import types
+from aiogram import types, Bot
 from aiogram.types import BotCommandScopeChat
 
 from app.config import Config
 
 
-async def set_commands(dp):
-    await dp.bot.set_my_commands(
+async def set_commands(bot: Bot) -> None:
+    await bot.set_my_commands(
         [
-            types.BotCommand("start", "Запустить бота"),
-            types.BotCommand("help", "Вывести справку"),
+            types.BotCommand(command="start", description="Запустить бота"),
+            types.BotCommand(command="help", description="Вывести справку"),
         ]
     )
     for admin in Config.ADMINS:
-        await dp.bot.set_my_commands(
+        await bot.set_my_commands(
             [
-                types.BotCommand("amount", "Количество юзеров в бд"),
-                types.BotCommand("chat_amount", "Количество групп в бд"),
-                types.BotCommand("chat_users_amount", "Количество пользователей во всех группах"),
-                types.BotCommand("exists_amount", "Количество живых юзеров"),
-                types.BotCommand("broadcast", "Рассылка по всем юзерам"),
-                types.BotCommand("users_file", 'Записать юзеров в файл')
+                types.BotCommand(command="amount", description="Количество юзеров в бд"),
+                types.BotCommand(command="chat_amount", description="Количество групп в бд"),
+                types.BotCommand(command="chat_users_amount", description="Количество пользователей во всех группах"),
+                types.BotCommand(command="exists_amount", description="Количество живых юзеров"),
+                types.BotCommand(command="broadcast", description="Рассылка по всем юзерам"),
+                types.BotCommand(command="users_file", description='Записать юзеров в файл'),
             ],
-            BotCommandScopeChat(admin)
+            BotCommandScopeChat(chat_id=admin),
         )

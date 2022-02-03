@@ -1,19 +1,19 @@
-from aiogram.utils.callback_data import CallbackData
+from aiogram.dispatcher.filters.callback_data import CallbackData
 
 from app.utils.markup_constructor import InlineMarkupConstructor
 
 
-class ExampleInlineKb(InlineMarkupConstructor):
-    callback_data = CallbackData('test', 'number')
+class ExampleMarkup(InlineMarkupConstructor):
+    class CD(CallbackData, prefix='test'):
+        number: str
 
     def get(self):
-        schema = [3, 2, 1]
+        schema = [3, 2]
         actions = [
-            {'text': '1', 'callback_data': self.callback_data.new('1')},
-            {'text': '2', 'callback_data': self.callback_data.new('2')},
+            {'text': '1', 'callback_data': self.CD(number='1')},
+            {'text': '2', 'callback_data': self.CD(number='2').pack()},
             {'text': '3', 'callback_data': '3'},
-            {'text': '4', 'callback_data': self.callback_data.new('4')},
-            {'text': '5', 'callback_data': (self.callback_data, '5')},
+            {'text': '4', 'callback_data': self.CD(number='4').pack()},
             {'text': '6', 'callback_data': '6'},
         ]
         return self.markup(actions, schema)
