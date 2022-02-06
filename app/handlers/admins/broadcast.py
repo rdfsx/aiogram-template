@@ -4,7 +4,6 @@ from aiogram.types import Message
 
 from app.keyboards.admin.inline import CancelKb
 from app.models import UserModel
-from app.models.user import UserModelShortView
 from app.states.admin_states import BroadcastAdmin
 from app.utils.broadcast import broadcast_smth
 
@@ -19,7 +18,7 @@ async def start_broadcasting(msg: Message, state: FSMContext):
     info_msg = await msg.answer("Рассылка запущена.")
     await state.clear()
 
-    chats = UserModel.find().project(UserModelShortView)
+    chats = UserModel.find()
 
     async def send_copy(chat_id: int, count: int, message: Message, red_msg: Message) -> int:
         await message.send_copy(chat_id)
