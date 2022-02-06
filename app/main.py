@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, Router
 
 from app import handlers, middlewares
 from app.config import Config
@@ -19,8 +19,13 @@ async def main():
     )
     dp = Dispatcher(storage=storage)
 
+    admin_router = Router()
+    dp.include_router(admin_router)
+    regular_router = Router()
+    dp.include_router(regular_router)
+
     middlewares.setup(dp)
-    handlers.setup_all_handlers(dp)
+    handlers.setup_all_handlers(regular_router, admin_router)
     logger.setup_logger()
 
     mongo = MyBeanieMongo()
