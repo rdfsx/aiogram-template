@@ -7,4 +7,4 @@ async def get_help_message(m: Message):
 
 
 def setup(dp: Dispatcher):
-    dp.register_message_handler(get_help_message, commands="help")
+    dp.message.register(get_help_message, commands="help")

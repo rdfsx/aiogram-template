@@ -1,13 +1,12 @@
 from aiogram import Dispatcher
 from aiogram.types import Message
-from aiogram.utils.markdown import quote_html
 
 from app.models import UserModel
 
 
 async def get_default_message(m: Message, user: UserModel):
-    await m.answer(quote_html(user))
+    await m.answer(str(user), parse_mode=None)
 
 
 def setup(dp: Dispatcher):
-    dp.register_message_handler(get_default_message)
+    dp.message.register(get_default_message)

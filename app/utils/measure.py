@@ -2,6 +2,7 @@ import time
 import logging
 from functools import wraps
 
+
 def func_time(func):
     @wraps(func)
     def _time_it(*args, **kwargs):

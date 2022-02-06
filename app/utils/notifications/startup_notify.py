@@ -1,18 +1,9 @@
-from typing import List, Union
+from aiogram import Bot
 
-from aiogram import md
-from aiogram_broadcaster import TextBroadcaster
+from app.config import Config
+from app.utils.broadcast import broadcast_smth, from_iterable
 
 
-async def notify_superusers(chats: Union[List[int], List[str], int, str]):
-    chats = [
-        {
-            "chat_id": chat_id,
-            "mention": md.hlink(title=f"ID:{chat_id}", url=f"tg://user?id={chat_id}"),
-        }
-        for chat_id in chats
-    ]
-    await TextBroadcaster(
-        chats=chats,
-        text=md.hbold("$mention, The bot is running!"),
-    ).run()
+async def notify_superusers(bot: Bot) -> int:
+    admins = from_iterable(Config.ADMINS)
+    return await broadcast_smth(admins, bot.send_message, False, text='The bot is running!')

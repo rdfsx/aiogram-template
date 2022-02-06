@@ -7,14 +7,14 @@ authors = ["rdfsx <m315498@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 environs = "^9.3.4"
-loguru = "^0.5.3"
+loguru = "0.6.0"
 aiofile = "^3.7.2"
-aiogram = "^2.18"
+aiogram = "3.0.0b1"
 beanie = "^1.8.12"
 uvloop = "^0.16.0"
 ujson = "^5.1.0"
 aiohttp = {extras = ["speedups"], version = "^3.8.1"}
-aiogram-broadcaster = "^0.0.7"
+aiolimiter = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 

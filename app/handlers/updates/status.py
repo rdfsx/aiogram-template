@@ -10,4 +10,4 @@ async def set_my_status(my_chat_member: ChatMemberUpdated, user: UserModel):
 
 
 def setup(dp: Dispatcher):
-    dp.register_my_chat_member_handler(set_my_status)
+    dp.my_chat_member.register(set_my_status)

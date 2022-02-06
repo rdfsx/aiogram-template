@@ -1,4 +1,5 @@
 from pydantic import Field
+from pydantic.main import BaseModel
 
 from app.models.base import TimeBaseModel
 

@@ -1,35 +1,37 @@
-from aiogram import types
-from aiogram.dispatcher.handler import current_handler
-from aiogram.dispatcher.middlewares import BaseMiddleware
+from typing import Any, Optional, Callable, Awaitable
+
+from aiogram import BaseMiddleware, types, Bot
+from aiogram.dispatcher.event.handler import HandlerObject
+from aiogram.types import Chat, Message
 
 
 class ClocksMiddleware(BaseMiddleware):
 
-    @staticmethod
-    async def setup_chat(data: dict, chat: types.Chat):
-        handler = current_handler.get()
-        allow = hasattr(handler, "clocks")
+    async def __call__(
+            self,
+            handler: Callable[[types.TelegramObject, dict[str, Any]], Awaitable[Any]],
+            event: types.TelegramObject,
+            data: dict[str, Any],
+    ) -> Any:
+        real_handler: HandlerObject = data["handler"]
+
+        chat: Optional[Chat] = data.get("event_chat")
+
+        allow = hasattr(real_handler.callback, "clocks")
+
+        bot: Bot = data['bot']
+
         if not allow:
-            return
-        chat_id = int(chat.id)
-        msg = await chat.bot.send_message(chat_id, "⏳")
-        await chat.bot.send_chat_action(chat_id, "typing")
+            return await handler(event, data)
 
-        data["clocks_msg"] = msg
+        msg: Optional[Message] = None
+        if chat:
+            msg = await bot.send_message(chat.id, "⏳")
+            await bot.send_chat_action(chat.id, "typing")
 
-    @staticmethod
-    async def close_chat(data: dict):
-        if msg := data.get('clocks_msg', None):
+        result = await handler(event, data)
+
+        if msg:
             await msg.delete()
 
-    async def on_process_message(self, message: types.Message, data: dict):
-        await self.setup_chat(data, message.chat)
-
-    async def on_process_callback_query(self, query: types.CallbackQuery, data: dict):
-        await self.setup_chat(data, query.message.chat if query.message else None)
-
-    async def on_post_process_message(self, message: types.Message, args: list, data: dict):
-        await self.close_chat(data)
-
-    async def on_post_process_callback_query(self, query: types.CallbackQuery, args: list, data: dict):
-        await self.close_chat(data)
+        return result

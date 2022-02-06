@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import List, Union
 
@@ -21,8 +23,9 @@ class InterceptHandler(logging.Handler):
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
-def setup_logger(level: Union[str, int] = "INFO", ignored: List[str]=[""]):
+def setup_logger(level: Union[str, int] = "INFO", ignored: List[str] | None = None):
     logging.basicConfig(handlers=[InterceptHandler()], level=logging.getLevelName(level))
-    for ignore in ignored:
-        logger.disable(ignore)
+    if ignored:
+        for ignore in ignored:
+            logger.disable(ignore)
     logging.info("Logging is successfully configured")

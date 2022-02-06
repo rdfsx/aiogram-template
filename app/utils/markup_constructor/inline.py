@@ -1,7 +1,7 @@
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 
+from aiogram.dispatcher.filters.callback_data import CallbackData
 from aiogram.types import CallbackGame, InlineKeyboardButton, InlineKeyboardMarkup, LoginUrl
-from aiogram.utils.callback_data import CallbackData
 
 from .base import BaseMarkupConstructor
 
@@ -11,15 +11,15 @@ class InlineMarkupConstructor(BaseMarkupConstructor):
     Class for creating inline keyboards
     Usage example:
         class ExampleMarkup(InlineMarkupConstructor):
-            callback_data = CallbackData('test', 'number')
+            class CD(CallbackData, prefix='test'):
+                number: str
             def get(self):
-                schema = [3, 2, 1]
+                schema = [3, 2]
                 actions = [
-                    {'text': '1', 'callback_data': self.callback_data.new('1')},
-                    {'text': '2', 'callback_data': self.callback_data.new('2')},
+                    {'text': '1', 'callback_data': self.CD(number='1')},
+                    {'text': '2', 'callback_data': self.CD(number='2').pack()},
                     {'text': '3', 'callback_data': '3'},
-                    {'text': '4', 'callback_data': self.callback_data.new('4')},
-                    {'text': '5', 'callback_data': (self.callback_data, '5')},
+                    {'text': '4', 'callback_data': self.CD(number='4').pack()},
                     {'text': '6', 'callback_data': '6'},
                 ]
                 return self.markup(actions, schema)
@@ -40,7 +40,7 @@ class InlineMarkupConstructor(BaseMarkupConstructor):
     def _replace_aliases(
         self,
         action: Dict[
-            str, Union[str, bool, Tuple[Dict[str, str], CallbackData], LoginUrl, CallbackGame]
+            str, Union[str, bool, CallbackData, LoginUrl, CallbackGame]
         ],
     ):
 
@@ -49,37 +49,34 @@ class InlineMarkupConstructor(BaseMarkupConstructor):
     def _check_properties(
         self,
         action: Dict[
-            str, Union[str, bool, Tuple[Dict[str, str], CallbackData], LoginUrl, CallbackGame]
+            str, Union[str, bool, CallbackData, LoginUrl, CallbackGame]
         ],
-    ) -> Dict[str, Union[str, bool, Tuple[Dict[str, str], CallbackData], LoginUrl, CallbackGame]]:
+    ) -> Dict[str, Union[str, bool, CallbackData, LoginUrl, CallbackGame]]:
         return super(InlineMarkupConstructor, self)._check_properties(action)
 
     @staticmethod
     def _set_callback_data(
         button_data: Dict[
-            str, Union[str, bool, Tuple[Dict[str, str], CallbackData], LoginUrl, CallbackGame]
+            str, Union[str, bool, CallbackData, LoginUrl, CallbackGame]
         ],
     ):
-        if isinstance(button_data["callback_data"], tuple):
-            button_data["callback_data"] = button_data["callback_data"][0].new(
-                button_data["callback_data"][1:]
-            )
+        if hasattr(button_data["callback_data"], "pack"):
+            button_data["callback_data"] = button_data["callback_data"].pack()
         elif not isinstance(button_data["callback_data"], str):
             raise ValueError(
-                f'Invalid value for callback_data {type(button_data["callback_data"])} please use tuple, list or str'
+                f'Invalid value for callback_data {type(button_data["callback_data"])} '
+                f'please use CallbackData, list or str'
             )
 
     def markup(
         self,
         actions: List[
             Dict[
-                str, Union[str, bool, Tuple[Dict[str, str], CallbackData], LoginUrl, CallbackGame]
+                str, Union[str, bool, CallbackData, LoginUrl, CallbackGame]
             ]
         ],
         schema: List[int],
     ) -> InlineKeyboardMarkup:
-        markup = InlineKeyboardMarkup()
-        markup.row_width = max(schema)
         buttons = list()
         for action in actions:
             self._replace_aliases(action)
@@ -99,5 +96,8 @@ class InlineMarkupConstructor(BaseMarkupConstructor):
                 raise ValueError("Insufficient data to create a button")
 
             buttons.append(InlineKeyboardButton(**button_data))
-        markup.inline_keyboard = self.create_keyboard_layout(buttons, schema)
+
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=self.create_keyboard_layout(buttons, schema)
+        )
         return markup
