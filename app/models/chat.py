@@ -10,7 +10,3 @@ class ChatModel(TimeBaseModel):
 
     class Collection:
         name = "ChatModel"
-
-
-class ChatModelShortView(BaseModel):
-    id: int = ...

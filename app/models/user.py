@@ -21,7 +21,3 @@ class UserModel(TimeBaseModel):
 
     class Collection:
         name = "UserModel"
-
-
-class UserModelShortView(UserModel):
-    id: int
