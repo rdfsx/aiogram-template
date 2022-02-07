@@ -39,6 +39,6 @@ async def main():
     finally:
         logging.warning("Shutting down..")
         await bot.session.close()
-        await storage.close()
+        storage.close()
         await mongo.close()
         logging.warning("Bye!")
