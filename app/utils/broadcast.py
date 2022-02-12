@@ -9,7 +9,7 @@ from aiogram.exceptions import TelegramRetryAfter
 logger = logging.getLogger(__name__)
 
 
-async def broadcast_smth(chats: AsyncGenerator[int] | Any,
+async def broadcast_smth(chats: AsyncGenerator[int | Any],
                          action: Callable[[int, Any, ...], Awaitable[Any, int]],
                          with_counter: bool = True,
                          attribute: str | None = None,

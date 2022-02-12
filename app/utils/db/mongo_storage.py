@@ -78,8 +78,8 @@ class MongoStorage(BaseStorage):
 
         return db_filter
 
-    async def close(self) -> None:
-        await self._mongo.close()
+    def close(self) -> None:
+        self._mongo.close()
 
     @asynccontextmanager
     async def lock(

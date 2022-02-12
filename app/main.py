@@ -1,6 +1,6 @@
 import logging
 
-from aiogram import Bot, Dispatcher, types, Router
+from aiogram import Bot, Dispatcher, Router
 
 from app import handlers, middlewares
 from app.config import Config
@@ -39,6 +39,6 @@ async def main():
     finally:
         logging.warning("Shutting down..")
         await bot.session.close()
-        await storage.close()
+        storage.close()
         await mongo.close()
         logging.warning("Bye!")

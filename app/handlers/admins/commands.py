@@ -8,7 +8,7 @@ from aiofile import async_open
 from aiogram import Bot, Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.exceptions import TelegramAPIError
-from aiogram.types import Message, InputFile, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 
 from app.models import UserModel, ChatModel
 
@@ -63,7 +63,7 @@ async def get_exists_users(m: Message, bot: Bot):
                 user.status = "member"
                 await user.save()
                 count += 1
-        except TelegramAPIError:  # TODO check if it working
+        except TelegramAPIError:  # TODO check it is working
             await user.delete()
         except Exception as e:
             user.status = "left"
@@ -75,12 +75,12 @@ async def get_exists_users(m: Message, bot: Bot):
 
 async def write_users_to_file(m: Message):
     await m.answer("Начинаем запись...")
-    users = await UserModel.find_all().to_list()
+    users = UserModel.find_all()
     filename = 'users.txt'
     async with async_open(filename, mode='w') as f:
-        for user in users:
+        async for user in users:
             await f.write(f"{user.id}\n")
-    await m.answer_document(InputFile(filename))
+    await m.answer_document(FSInputFile(filename))
     os.remove(filename)
 
 
