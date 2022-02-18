@@ -13,7 +13,7 @@ from app.utils.set_bot_commands import set_commands
 
 async def main():
     bot = Bot(token=Config.BOT_TOKEN, parse_mode='HTML')
-    storage = MongoStorage.from_url(
+    storage = await MongoStorage.from_url(
         Config.MONGODB_URI,
         f"{Config.MONGODB_DATABASE}_fsm",
     )
