@@ -17,4 +17,5 @@ def setup(dp: Dispatcher, influx_client: InfluxDBClient):
     dp.message.middleware(EventLockMiddleware())
     dp.update.outer_middleware(ACLMiddleware())
     dp.update.middleware(InfluxDBMiddleware(influx_client))
-    dp.update.middleware(StatsMiddleware())
+    dp.message.middleware(StatsMiddleware())
+    dp.callback_query.middleware(StatsMiddleware())
