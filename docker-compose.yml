@@ -33,6 +33,28 @@ services:
     depends_on:
       - mongo
 
+  influxdb:
+    image: influxdb:1.8-alpine
+    container_name: "test-stats-influxdb"
+    restart: always
+    volumes:
+      - "../influxdb:/var/lib/influxdb"
+    env_file:
+      - '.env'
+
+    networks:
+      - botnet
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: "test-stats-grafana"
+    environment:
+      - GF_DATE_FORMATS_DEFAULT_TIMEZONE=browser
+    ports:
+      - "3000:3000"
+    networks:
+      - botnet
+
 networks:
   botnet:
     driver: bridge

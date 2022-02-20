@@ -25,3 +25,8 @@ class Config(NamedTuple):
         MONGODB_URI += f"{MONGODB_USERNAME}:{MONGODB_PASSWORD}@"
     MONGODB_URI += f"{MONGODB_HOSTNAME}:{MONGODB_PORT}"
 
+    INFLUX_HOST = 'influxdb'
+    INFLUX_PASSWORD = __env.str('INFLUXDB_USER_PASSWORD')
+    INFLUX_USER = __env.str('INFLUXDB_USER')
+    INFLUX_DB = __env.str('INFLUXDB_DB')
+

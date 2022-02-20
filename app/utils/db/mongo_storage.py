@@ -175,11 +175,13 @@ class DefaultMongoLock:
                  collection: str,
                  key: Dict[str, Any],
                  sleep: float = 0.1,
-                 timeout: float = DEFAULT_MONGO_LOCK):
+                 timeout: float = DEFAULT_MONGO_LOCK,
+                 skip: bool = False):
         self.sleep = sleep
         self.key = key
         self.collection = db[collection]
         self.timeout = timeout
+        self.skip = skip
 
     async def __aenter__(self):
         if await self.acquire():
@@ -226,5 +228,6 @@ class DefaultMongoLock:
         expire = datetime.utcnow() + timedelta(seconds=timeout)
         await self.collection.update_one(
             filter=self.key,
-            update={'$set': {'expireAt': expire}}
+            update={'$set': {'expireAt': expire}},
+            upsert=True,
         )

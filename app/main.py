@@ -1,6 +1,7 @@
 import logging
 
 from aiogram import Bot, Dispatcher, Router
+from aioinflux import InfluxDBClient
 
 from app import handlers, middlewares
 from app.config import Config
@@ -18,13 +19,19 @@ async def main():
         f"{Config.MONGODB_DATABASE}_fsm",
     )
     dp = Dispatcher(storage=storage)
+    influx_client = InfluxDBClient(
+        host=Config.INFLUX_HOST,
+        db=Config.INFLUX_DB,
+        username=Config.INFLUX_USER,
+        password=Config.INFLUX_PASSWORD,
+    )
 
     admin_router = Router()
     dp.include_router(admin_router)
     regular_router = Router()
     dp.include_router(regular_router)
 
-    middlewares.setup(dp)
+    middlewares.setup(dp, influx_client)
     handlers.setup_all_handlers(regular_router, admin_router)
     logger.setup_logger()
 

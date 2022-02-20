@@ -76,6 +76,24 @@ yarl = ">=1.0,<2.0"
 speedups = ["aiodns", "brotli", "cchardet"]
 
 [[package]]
+name = "aioinflux"
+version = "0.9.0"
+description = "Asynchronous Python client for InfluxDB"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+aiohttp = ">=3.0"
+ciso8601 = "*"
+
+[package.extras]
+cache = ["aioredis (>=1.2.0)", "lz4 (>=2.1.0)"]
+docs = ["docutils", "sphinx", "sphinx-rtd-theme", "sphinx-autodoc-typehints"]
+pandas = ["pandas (>=0.21)", "numpy"]
+test = ["pytest", "pytest-asyncio", "pytest-cov", "pyyaml", "pytz", "flake8", "pep8-naming", "flake8-rst-docstrings", "pygments", "dataclasses"]
+
+[[package]]
 name = "aiolimiter"
 version = "1.0.0"
 description = "asyncio rate limiter, a leaky bucket implementation"
@@ -182,6 +200,14 @@ python-versions = ">=3.5.0"
 
 [package.extras]
 unicode_backport = ["unicodedata2"]
+
+[[package]]
+name = "ciso8601"
+version = "2.2.0"
+description = "Fast ISO8601 date time parser for Python written in C"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "click"
@@ -424,7 +450,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "54c647ff87634fd6415b694f5022b0cc85518284510ca6536510ead1246f85e0"
+content-hash = "b9b0116589ba57d60e8faaf737a0c6c9a4eae93e83041c7437eeb9f6d6243090"
 
 [metadata.files]
 aiodns = [
@@ -516,6 +542,10 @@ aiohttp = [
     {file = "aiohttp-3.8.1-cp39-cp39-win32.whl", hash = "sha256:7187a76598bdb895af0adbd2fb7474d7f6025d170bc0a1130242da817ce9e7d1"},
     {file = "aiohttp-3.8.1-cp39-cp39-win_amd64.whl", hash = "sha256:1c182cb873bc91b411e184dab7a2b664d4fea2743df0e4d57402f7f3fa644bac"},
     {file = "aiohttp-3.8.1.tar.gz", hash = "sha256:fc5471e1a54de15ef71c1bc6ebe80d4dc681ea600e68bfd1cbce40427f0b7578"},
+]
+aioinflux = [
+    {file = "aioinflux-0.9.0-py3-none-any.whl", hash = "sha256:f812d2814492164282c28cbe867d32cce3e8d256e116c6cf4675e896fe804953"},
+    {file = "aioinflux-0.9.0.tar.gz", hash = "sha256:720d056a9069ac3688f83b35786b234c890afb7c9a379eb421e5379e1eabc5cb"},
 ]
 aiolimiter = [
     {file = "aiolimiter-1.0.0-py3-none-any.whl", hash = "sha256:f1c5ba2a2861cd4a126c1294f5282208383e67d5b128a4f32def0c702cae8039"},
@@ -684,6 +714,9 @@ cffi = [
 charset-normalizer = [
     {file = "charset-normalizer-2.0.11.tar.gz", hash = "sha256:98398a9d69ee80548c762ba991a4728bfc3836768ed226b3945908d1a688371c"},
     {file = "charset_normalizer-2.0.11-py3-none-any.whl", hash = "sha256:2842d8f5e82a1f6aa437380934d5e1cd4fcf2003b06fed6940769c164a480a45"},
+]
+ciso8601 = [
+    {file = "ciso8601-2.2.0.tar.gz", hash = "sha256:14ad817ed31a698372d42afa81b0173d71cd1d0b48b7499a2da2a01dcc8695e6"},
 ]
 click = [
     {file = "click-8.0.3-py3-none-any.whl", hash = "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3"},
