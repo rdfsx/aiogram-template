@@ -1,13 +1,15 @@
+import asyncio
 from typing import cast, AsyncGenerator
 
-from aiogram import types, Router
+from aiogram import types, Router, Bot
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import Message
 
 from app.keyboards.admin.inline import CancelKb
 from app.models import UserModel
 from app.states.admin_states import BroadcastAdmin
-from app.utils.broadcast import broadcast_smth
+from app.utils.broadcast import broadcast_smth, MemoryBroadcastBotLocker
+from app.utils.exceptions import BroadcastLockException
 
 
 async def start_broadcast(msg: Message, state: FSMContext):
@@ -16,7 +18,7 @@ async def start_broadcast(msg: Message, state: FSMContext):
                      reply_markup=CancelKb().get())
 
 
-async def start_broadcasting(msg: Message, state: FSMContext):
+async def start_broadcasting(msg: Message, state: FSMContext, broadcast_locker: MemoryBroadcastBotLocker, bot: Bot):
     info_msg = await msg.answer("Рассылка запущена.")
     await state.clear()
 
@@ -37,11 +39,16 @@ async def start_broadcasting(msg: Message, state: FSMContext):
             await red_msg.edit_text(f"Отправлено {count} сообщений.")
         return count
 
-    amount = await broadcast_smth(
-        cast(AsyncGenerator, chats), send_copy, True, 'id', message=msg, red_msg=info_msg
-    )
+    try:
+        async with broadcast_locker.lock(bot.id):
+            amount = await broadcast_smth(
+                cast(AsyncGenerator, chats), send_copy, True, 'id', message=msg, red_msg=info_msg
+            )
+            await info_msg.edit_text(f"Рассылка завершена. Отправлено {amount} сообщений.")
 
-    await info_msg.edit_text(f"Рассылка завершена. Отправлено {amount} сообщений.")
+    except BroadcastLockException:
+        await info_msg.edit_text("Рассылка уже была запущена ранее. "
+                                 "Дождитесь завершения рассылки, чтобы начать новую.")
 
 
 def setup(router: Router):

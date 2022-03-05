@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher, Router
 from app import handlers, middlewares
 from app.config import Config
 from app.utils import logger
+from app.utils.broadcast import MemoryBroadcastBotLocker
 from app.utils.db import MyBeanieMongo
 from app.utils.db.mongo_storage import MongoStorage
 from app.utils.notifications.startup_notify import notify_superusers
@@ -34,8 +35,10 @@ async def main():
     await notify_superusers(bot)
     await set_commands(bot)
 
+    broadcast_locker = MemoryBroadcastBotLocker()
+
     try:
-        await dp.start_polling(bot)
+        await dp.start_polling(bot, broadcast_locker=broadcast_locker)
     finally:
         logging.warning("Shutting down..")
         await bot.session.close()

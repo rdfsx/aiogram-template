@@ -2,9 +2,14 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import AsyncGenerator, Callable, Any, Awaitable, Iterable
+from asyncio import Lock
+from collections import defaultdict
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Callable, Any, Awaitable, Iterable, DefaultDict, Hashable
 
 from aiogram.exceptions import TelegramRetryAfter
+
+from app.utils.exceptions import BroadcastLockException
 
 logger = logging.getLogger(__name__)
 
@@ -45,3 +50,25 @@ async def from_iterable(it: Iterable) -> AsyncGenerator:
     for item in it:
         await asyncio.sleep(0)
         yield item
+
+
+class MemoryBroadcastBotLocker:
+    def __init__(self) -> None:
+        self._locks: DefaultDict[Hashable, Lock] = defaultdict(Lock)
+
+    @asynccontextmanager
+    async def lock(self, bot_id: int) -> AsyncGenerator[None, None]:
+        if self._locks.get(bot_id, None) is not None:
+            raise BroadcastLockException
+
+        lock = self._locks[bot_id]
+        async with lock:
+            yield
+
+        self._locks.pop(bot_id)
+
+    def close(self) -> None:
+        self._locks.clear()
+
+    def __del__(self):
+        self.close()
