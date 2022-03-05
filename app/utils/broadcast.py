@@ -65,6 +65,7 @@ class MemoryBroadcastBotLocker:
         async with lock:
             yield
 
+        # noinspection PyAsyncCall
         self._locks.pop(bot_id)
 
     def close(self) -> None:
