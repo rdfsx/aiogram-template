@@ -1,24 +1,31 @@
-import asyncio
 from typing import cast, AsyncGenerator
 
 from aiogram import types, Router, Bot
 from aiogram.dispatcher.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardRemove
 
-from app.keyboards.admin.inline import CancelKb
+from app.keyboards.admin.reply import CancelMarkup
 from app.models import UserModel
 from app.states.admin_states import BroadcastAdmin
 from app.utils.broadcast import broadcast_smth, MemoryBroadcastBotLocker
 from app.utils.exceptions import BroadcastLockException
 
 
-async def start_broadcast(msg: Message, state: FSMContext):
+async def start_broadcast(msg: Message, state: FSMContext, broadcast_locker: MemoryBroadcastBotLocker, bot: Bot):
+    if broadcast_locker.is_exist(bot.id):
+        return msg.answer("Рассылка уже была запущена ранее. Дождитесь завершения рассылки, чтобы начать новую.")
     await state.set_state(BroadcastAdmin.BROADCAST)
     await msg.answer('Введите сообщение, которое хотели бы отправить всем, кто есть в базе:',
-                     reply_markup=CancelKb().get())
+                     reply_markup=CancelMarkup().get())
+
+
+async def cancel_broadcast(msg: Message, state: FSMContext):
+    await state.clear()
+    await msg.answer("Отменено.", reply_markup=ReplyKeyboardRemove())
 
 
 async def start_broadcasting(msg: Message, state: FSMContext, broadcast_locker: MemoryBroadcastBotLocker, bot: Bot):
+    await msg.answer("OK", reply_markup=ReplyKeyboardRemove())
     info_msg = await msg.answer("Рассылка запущена.")
     await state.clear()
 
@@ -53,4 +60,5 @@ async def start_broadcasting(msg: Message, state: FSMContext, broadcast_locker: 
 
 def setup(router: Router):
     router.message.register(start_broadcast, commands="broadcast")
+    router.message.register(cancel_broadcast, text="Отмена", state=BroadcastAdmin.BROADCAST)
     router.message.register(start_broadcasting, state=BroadcastAdmin.BROADCAST, content_types=types.ContentType.ANY)

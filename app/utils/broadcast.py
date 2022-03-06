@@ -58,14 +58,19 @@ class MemoryBroadcastBotLocker:
 
     @asynccontextmanager
     async def lock(self, bot_id: int) -> AsyncGenerator[None, None]:
-        if self._locks.get(bot_id, None) is not None:
+        if self.is_exist(bot_id):
             raise BroadcastLockException
 
         lock = self._locks[bot_id]
         async with lock:
             yield
 
-        # noinspection PyAsyncCall
+        self.delete(bot_id)
+
+    def is_exist(self, bot_id: int) -> bool:
+        return True if self._locks.get(bot_id, None) else False
+
+    def delete(self, bot_id: int) -> None:
         self._locks.pop(bot_id)
 
     def close(self) -> None:

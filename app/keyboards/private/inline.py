@@ -1,4 +1,5 @@
 from aiogram.dispatcher.filters.callback_data import CallbackData
+from aiogram.types import InlineKeyboardMarkup
 
 from app.utils.markup_constructor import InlineMarkupConstructor
 
@@ -7,7 +8,7 @@ class ExampleMarkup(InlineMarkupConstructor):
     class CD(CallbackData, prefix='test'):
         number: str
 
-    def get(self):
+    def get(self) -> InlineKeyboardMarkup:
         schema = [3, 2]
         actions = [
             {'text': '1', 'callback_data': self.CD(number='1')},

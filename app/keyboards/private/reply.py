@@ -1,10 +1,10 @@
-from aiogram.types import KeyboardButtonPollType
+from aiogram.types import KeyboardButtonPollType, ReplyKeyboardMarkup
 
 from app.utils.markup_constructor import ReplyMarkupConstructor
 
 
 class ExampleReplyMarkup(ReplyMarkupConstructor):
-    def get(self):
+    def get(self) -> ReplyKeyboardMarkup:
         schema = [1, 2, 3, 3]
         actions = [
             {'text': '1', },
