@@ -9,12 +9,13 @@ python = "^3.9"
 environs = "^9.3.4"
 loguru = "0.6.0"
 aiofile = "^3.7.2"
-aiogram = "3.0.0b1"
+aiogram = "3.0.0b2"
 beanie = "^1.8.12"
 uvloop = "^0.16.0"
 ujson = "^5.1.0"
 aiohttp = {extras = ["speedups"], version = "^3.8.1"}
 aiolimiter = "^1.0.0"
+cookiecutter = "^1.7.3"
 
 [tool.poetry.dev-dependencies]
 

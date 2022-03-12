@@ -1,4 +1,4 @@
-# aiogram-template
+# {{cookiecutter.project_name}}
 
 ### [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/downloads/)  [![Aiogram](https://img.shields.io/badge/aiogram-3-blue)](https://pypi.org/project/aiogram/) 
 
