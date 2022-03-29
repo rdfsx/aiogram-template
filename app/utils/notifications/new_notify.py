@@ -20,8 +20,10 @@ async def notify_new_user(user: User, bot: Bot) -> int:
     admins = from_iterable(Config.ADMINS)
 
     if photo:
-        return await broadcast_smth(admins, bot.send_photo, False, photo=photo, caption='\n'.join(txt))
-    return await broadcast_smth(admins, bot.send_message, False, text='\n'.join(txt))
+        return await broadcast_smth(
+            admins, bot.send_photo, False, photo=photo, caption="\n".join(txt)
+        )
+    return await broadcast_smth(admins, bot.send_message, False, text="\n".join(txt))
 
 
 async def notify_new_group(chat: Chat, bot: Bot) -> int:
@@ -29,7 +31,7 @@ async def notify_new_group(chat: Chat, bot: Bot) -> int:
     txt = [
         "#new_group",
         f"Full name: {html.quote(chat.first_name)}",
-        f'id: {chat.id}',
+        f"id: {chat.id}",
         f"Title: {chat.title}",
         f"Description: {chat.description}",
         f"Members: {await bot.get_chat_member_count(chat.id)}",
@@ -37,4 +39,4 @@ async def notify_new_group(chat: Chat, bot: Bot) -> int:
     ]
     admins = from_iterable(Config.ADMINS)
 
-    return await broadcast_smth(admins, bot.send_message, False, text='\n'.join(txt))
+    return await broadcast_smth(admins, bot.send_message, False, text="\n".join(txt))

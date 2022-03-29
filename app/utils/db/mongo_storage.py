@@ -5,7 +5,12 @@ from typing import Any, AsyncGenerator, Dict, Optional
 
 from aiogram import Bot
 from aiogram.dispatcher.fsm.state import State
-from aiogram.dispatcher.fsm.storage.base import DEFAULT_DESTINY, BaseStorage, StateType, StorageKey
+from aiogram.dispatcher.fsm.storage.base import (
+    DEFAULT_DESTINY,
+    BaseStorage,
+    StateType,
+    StorageKey,
+)
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase  # type: ignore
 from pymongo.errors import InvalidOperation, DuplicateKeyError
 from pymongo.results import UpdateResult
@@ -24,14 +29,14 @@ class MongoStorage(BaseStorage):
     """
 
     def __init__(
-            self,
-            mongo: AsyncIOMotorClient,
-            db: AsyncIOMotorDatabase,
-            with_bot_id: bool = True,
-            with_destiny: bool = True,
-            state_ttl: Optional[int] = None,
-            data_ttl: Optional[int] = None,
-            lock_ttl: Optional[int] = None,
+        self,
+        mongo: AsyncIOMotorClient,
+        db: AsyncIOMotorDatabase,
+        with_bot_id: bool = True,
+        with_destiny: bool = True,
+        state_ttl: Optional[int] = None,
+        data_ttl: Optional[int] = None,
+        lock_ttl: Optional[int] = None,
     ) -> None:
         self._mongo = mongo
         self._db = db
@@ -43,14 +48,14 @@ class MongoStorage(BaseStorage):
 
     @classmethod
     async def from_url(
-            cls,
-            url: str,
-            db_name: str = "aiogram_fsm",
-            with_bot_id: bool = True,
-            with_destiny: bool = True,
-            state_ttl: Optional[int] = None,
-            data_ttl: Optional[int] = None,
-            lock_ttl: Optional[int] = DEFAULT_MONGO_LOCK,
+        cls,
+        url: str,
+        db_name: str = "aiogram_fsm",
+        with_bot_id: bool = True,
+        with_destiny: bool = True,
+        state_ttl: Optional[int] = None,
+        data_ttl: Optional[int] = None,
+        lock_ttl: Optional[int] = DEFAULT_MONGO_LOCK,
     ) -> "MongoStorage":
         mongo = AsyncIOMotorClient(url)
         db = mongo.get_database(db_name)
@@ -69,7 +74,7 @@ class MongoStorage(BaseStorage):
     async def _apply_indexes(db: AsyncIOMotorDatabase) -> None:
         for collection in COLLECTIONS:
             await db[collection].create_index(
-                keys=[('chat', 1), ('user', 1), ('bot_id', 1)],
+                keys=[("chat", 1), ("user", 1), ("bot_id", 1)],
                 name="chat_user_bot_idx",
                 unique=True,
                 background=True,
@@ -104,22 +109,29 @@ class MongoStorage(BaseStorage):
 
     @asynccontextmanager
     async def lock(
-            self,
-            bot: Bot,
-            key: StorageKey,
+        self,
+        bot: Bot,
+        key: StorageKey,
     ) -> AsyncGenerator[None, None]:
         async with DefaultMongoLock(self._db, LOCK, self._get_db_filter(key)):
             yield None
 
     async def set_state(
-            self,
-            bot: Bot,
-            key: StorageKey,
-            state: StateType = None,
+        self,
+        bot: Bot,
+        key: StorageKey,
+        state: StateType = None,
     ) -> None:
-        expiration = datetime.utcnow() + timedelta(seconds=self.state_ttl) if self.state_ttl else None
+        expiration = (
+            datetime.utcnow() + timedelta(seconds=self.state_ttl)
+            if self.state_ttl
+            else None
+        )
 
-        query_data = {"state": state.state if isinstance(state, State) else state, "expireAt": expiration}
+        query_data = {
+            "state": state.state if isinstance(state, State) else state,
+            "expireAt": expiration,
+        }
 
         if state is None:
             await self._db[STATE].delete_one(filter=self._get_db_filter(key))
@@ -131,20 +143,24 @@ class MongoStorage(BaseStorage):
             )
 
     async def get_state(
-            self,
-            bot: Bot,
-            key: StorageKey,
+        self,
+        bot: Bot,
+        key: StorageKey,
     ) -> Optional[str]:
         result = await self._db[STATE].find_one(filter=self._get_db_filter(key))
         return result.get("state") if result else None
 
     async def set_data(
-            self,
-            bot: Bot,
-            key: StorageKey,
-            data: Dict[str, Any],
+        self,
+        bot: Bot,
+        key: StorageKey,
+        data: Dict[str, Any],
     ) -> None:
-        expiration = datetime.utcnow() + timedelta(seconds=self.data_ttl) if self.data_ttl else None
+        expiration = (
+            datetime.utcnow() + timedelta(seconds=self.data_ttl)
+            if self.data_ttl
+            else None
+        )
 
         await self._db[DATA].update_one(
             filter=self._get_db_filter(key),
@@ -153,9 +169,9 @@ class MongoStorage(BaseStorage):
         )
 
     async def get_data(
-            self,
-            bot: Bot,
-            key: StorageKey,
+        self,
+        bot: Bot,
+        key: StorageKey,
     ) -> Dict[str, Any]:
         result: Optional[Dict[str, Dict[str, Any]]] = await self._db[DATA].find_one(
             filter=self._get_db_filter(key)
@@ -169,13 +185,14 @@ class MongoLockException(Exception):
 
 
 class DefaultMongoLock:
-
-    def __init__(self,
-                 db: AsyncIOMotorDatabase,
-                 collection: str,
-                 key: Dict[str, Any],
-                 sleep: float = 0.1,
-                 timeout: float = DEFAULT_MONGO_LOCK):
+    def __init__(
+        self,
+        db: AsyncIOMotorDatabase,
+        collection: str,
+        key: Dict[str, Any],
+        sleep: float = 0.1,
+        timeout: float = DEFAULT_MONGO_LOCK,
+    ):
         self.sleep = sleep
         self.key = key
         self.collection = db[collection]
@@ -202,7 +219,7 @@ class DefaultMongoLock:
     async def do_acquire(self) -> bool:
         try:
             lock_dict = {
-                'expireAt': datetime.utcnow() + timedelta(seconds=DEFAULT_MONGO_LOCK),
+                "expireAt": datetime.utcnow() + timedelta(seconds=DEFAULT_MONGO_LOCK),
             }
             lock_dict.update(self.key)
             await self.collection.insert_one(lock_dict)
@@ -217,14 +234,13 @@ class DefaultMongoLock:
             return None
 
     async def touch(self, timeout: float = DEFAULT_MONGO_LOCK) -> None:
-        """Renew lock to avoid expiration. """
+        """Renew lock to avoid expiration."""
         lock = await self.collection.find_one(filter=self.key)
         if not lock:
-            raise MongoLockException(u'Can\'t find lock for {key}'.format(key=self.key))
-        if not lock['expireAt']:
+            raise MongoLockException("Can't find lock for {key}".format(key=self.key))
+        if not lock["expireAt"]:
             return
         expire = datetime.utcnow() + timedelta(seconds=timeout)
         await self.collection.update_one(
-            filter=self.key,
-            update={'$set': {'expireAt': expire}}
+            filter=self.key, update={"$set": {"expireAt": expire}}
         )

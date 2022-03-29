@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class ThrottlingMiddleware(BaseMiddleware):
-    def __init__(self, default_rate: float = .1) -> None:
+    def __init__(self, default_rate: float = 0.1) -> None:
         self.limiters: Dict[str, AsyncLimiter] = {}
         self.default_rate = default_rate
 
@@ -24,7 +24,9 @@ class ThrottlingMiddleware(BaseMiddleware):
 
         real_handler: HandlerObject = data["handler"]
 
-        throttling_key = getattr(real_handler, "throttling_key", f"{real_handler.callback}")
+        throttling_key = getattr(
+            real_handler, "throttling_key", f"{real_handler.callback}"
+        )
         throttling_rate = getattr(real_handler, "throttling_rate", self.default_rate)
 
         if not user:

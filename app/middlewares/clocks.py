@@ -6,12 +6,11 @@ from aiogram.types import Chat, Message
 
 
 class ClocksMiddleware(BaseMiddleware):
-
     async def __call__(
-            self,
-            handler: Callable[[types.TelegramObject, dict[str, Any]], Awaitable[Any]],
-            event: types.TelegramObject,
-            data: dict[str, Any],
+        self,
+        handler: Callable[[types.TelegramObject, dict[str, Any]], Awaitable[Any]],
+        event: types.TelegramObject,
+        data: dict[str, Any],
     ) -> Any:
         real_handler: HandlerObject = data["handler"]
 
@@ -19,7 +18,7 @@ class ClocksMiddleware(BaseMiddleware):
 
         allow = hasattr(real_handler.callback, "clocks")
 
-        bot: Bot = data['bot']
+        bot: Bot = data["bot"]
 
         if not allow:
             return await handler(event, data)

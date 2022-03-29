@@ -29,7 +29,8 @@ class MyMongoClient:
             if "query() got an unexpected keyword argument 'lifetime'" in e.args[0]:
                 logging.warning(
                     "Run `pip install dnspython==1.16.0` in order to fix ConfigurationError. "
-                    "More information: https://github.com/mongodb/mongo-python-driver/pull/423#issuecomment-528998245")
+                    "More information: https://github.com/mongodb/mongo-python-driver/pull/423#issuecomment-528998245"
+                )
             raise e
         return self._mongo
 
@@ -55,7 +56,6 @@ class MyMongoClient:
 
 
 class MyBeanieMongo(MyMongoClient):
-
     async def init_db(self):
         logging.info(f"Initializing database {self._db_name} {self._uri}")
         await init_beanie(database=self.get_db(), document_models=models.__models__)

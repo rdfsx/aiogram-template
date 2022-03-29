@@ -1,6 +1,6 @@
-def set_clocks():
+def lock_up():
     def decorator(func):
-        setattr(func, "clocks", True)
+        setattr(func, "lock", True)
         return func
 
     return decorator

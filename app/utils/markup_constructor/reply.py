@@ -32,7 +32,12 @@ class ReplyMarkupConstructor(BaseMarkupConstructor):
         "request_location": "location",
         "request_poll": "poll",
     }
-    available_properties = ["text", "request_contact", "request_location", "request_poll"]
+    available_properties = [
+        "text",
+        "request_contact",
+        "request_location",
+        "request_poll",
+    ]
     properties_amount = 2
 
     def _replace_aliases(
@@ -56,7 +61,10 @@ class ReplyMarkupConstructor(BaseMarkupConstructor):
                 )
 
         with suppress(KeyError):
-            if isinstance(button_data["request_poll"], str) or button_data["request_poll"] is None:
+            if (
+                isinstance(button_data["request_poll"], str)
+                or button_data["request_poll"] is None
+            ):
                 button_data["request_poll"] = KeyboardButtonPollType(
                     type=button_data["request_poll"]
                 )

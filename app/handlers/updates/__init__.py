@@ -4,5 +4,5 @@ from app.handlers.updates import status
 
 
 def setup(dp: Dispatcher):
-    for module in (status, ):
+    for module in (status,):
         module.setup(dp)

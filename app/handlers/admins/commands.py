@@ -19,9 +19,15 @@ async def get_amount_users(msg: Message, bot: Bot):
     left_amount = await UserModel.find(UserModel.status == "left").count()
     amount = await UserModel.find_all().count()
     now = datetime.now()
-    last_day_amount = await UserModel.find(UserModel.created_at > (now - timedelta(days=1))).count()
-    last_week_amount = await UserModel.find(UserModel.created_at > (now - timedelta(weeks=1))).count()
-    last_month_amount = await UserModel.find(UserModel.created_at > (now - timedelta(days=31))).count()
+    last_day_amount = await UserModel.find(
+        UserModel.created_at > (now - timedelta(days=1))
+    ).count()
+    last_week_amount = await UserModel.find(
+        UserModel.created_at > (now - timedelta(weeks=1))
+    ).count()
+    last_month_amount = await UserModel.find(
+        UserModel.created_at > (now - timedelta(days=31))
+    ).count()
     await msg.answer(
         "\n".join(
             [
@@ -69,15 +75,15 @@ async def get_exists_users(m: Message, bot: Bot):
             user.status = "left"
             await user.save()
             logging.exception(e)
-        await asyncio.sleep(.05)
+        await asyncio.sleep(0.05)
     await m.answer(f"Активных пользователей: {count}")
 
 
 async def write_users_to_file(m: Message):
     await m.answer("Начинаем запись...")
     users = UserModel.find_all()
-    filename = 'users.txt'
-    async with async_open(filename, mode='w') as f:
+    filename = "users.txt"
+    async with async_open(filename, mode="w") as f:
         async for user in users:
             await f.write(f"{user.id}\n")
     await m.answer_document(FSInputFile(filename))
@@ -91,7 +97,7 @@ async def cancel_all(ctx: Union[CallbackQuery, Message], state: FSMContext):
         await ctx.answer()
         msg = ctx.message
         await msg.delete()
-    await msg.answer('Отменено.')
+    await msg.answer("Отменено.")
 
 
 def setup(router: Router):
@@ -100,5 +106,5 @@ def setup(router: Router):
     router.message.register(get_amount_chats_users, commands="chat_users_amount")
     router.message.register(get_exists_users, commands="exists_amount")
     router.message.register(write_users_to_file, commands="users_file")
-    router.callback_query.register(cancel_all, text='cancel', state='*')
-    router.message.register(cancel_all, commands="/cancel", state='*')
+    router.callback_query.register(cancel_all, text="cancel", state="*")
+    router.message.register(cancel_all, commands="/cancel", state="*")

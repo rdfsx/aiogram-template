@@ -18,7 +18,9 @@ class BaseMarkupConstructor(ABC):
         if not self.available_properties:
             raise ValueError("You need to specify available_properties")
         if self.properties_amount < self.properties_amount:
-            raise ValueError(f"properties_amount can't be less then {self.properties_amount}")
+            raise ValueError(
+                f"properties_amount can't be less then {self.properties_amount}"
+            )
 
     def _replace_aliases(
         self,
@@ -52,7 +54,9 @@ class BaseMarkupConstructor(ABC):
                         f"Received {len(button_data)} expected {self.properties_amount}"
                     )
             else:
-                raise ValueError(f"Invalid value {key} please use {self.available_properties} ")
+                raise ValueError(
+                    f"Invalid value {key} please use {self.available_properties} "
+                )
         return button_data
 
     @staticmethod

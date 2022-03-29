@@ -5,7 +5,15 @@ import logging
 from asyncio import Lock
 from collections import defaultdict
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Callable, Any, Awaitable, Iterable, DefaultDict, Hashable
+from typing import (
+    AsyncGenerator,
+    Callable,
+    Any,
+    Awaitable,
+    Iterable,
+    DefaultDict,
+    Hashable,
+)
 
 from aiogram.exceptions import TelegramRetryAfter
 
@@ -14,11 +22,13 @@ from app.utils.exceptions import BroadcastLockException
 logger = logging.getLogger(__name__)
 
 
-async def broadcast_smth(chats: AsyncGenerator[int | Any],
-                         action: Callable[[int, Any, ...], Awaitable[Any, int]],
-                         with_counter: bool = True,
-                         attribute: str | None = None,
-                         **func_kwargs: Any) -> int:
+async def broadcast_smth(
+    chats: AsyncGenerator[int | Any],
+    action: Callable[[int, Any, ...], Awaitable[Any, int]],
+    with_counter: bool = True,
+    attribute: str | None = None,
+    **func_kwargs: Any,
+) -> int:
     i = 0
 
     async for chat in chats:
@@ -34,8 +44,10 @@ async def broadcast_smth(chats: AsyncGenerator[int | Any],
                 await action(chat_id, **func_kwargs)
 
         except TelegramRetryAfter as e:
-            logger.error(f"Target [ID:{chat_id}]: Flood limit is exceeded. "
-                         f"Sleep {e.retry_after} seconds.")
+            logger.error(
+                f"Target [ID:{chat_id}]: Flood limit is exceeded. "
+                f"Sleep {e.retry_after} seconds."
+            )
             await asyncio.sleep(e.retry_after)
 
         except Exception as e:

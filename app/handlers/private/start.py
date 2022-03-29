@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 
 async def get_start_message(m: Message):
-    await m.answer('Hello')
+    await m.answer("Hello")
 
 
 def setup(dp: Dispatcher):

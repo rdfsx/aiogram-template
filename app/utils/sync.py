@@ -7,7 +7,6 @@ Result = TypeVar("Result")
 
 
 def run_sync_decorator(func: Callable[..., Any]):
-
     @wraps(func)
     async def wrapper(*args: Any, **kwargs: Any):
         loop = asyncio.get_event_loop()

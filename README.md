@@ -1,6 +1,6 @@
 # aiogram-template
 
-### [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/downloads/)  [![Aiogram](https://img.shields.io/badge/aiogram-3-blue)](https://pypi.org/project/aiogram/) 
+### [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/downloads/)  [![Aiogram](https://img.shields.io/badge/aiogram-3-blue)](https://pypi.org/project/aiogram/)  [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ### About
 A template for creating bots as quickly as possible. Written on [aiogram](https://github.com/aiogram/aiogram). Contains a lot of tools right out of the box, such as broadcasting, simple statistics, new user notifications, etc.

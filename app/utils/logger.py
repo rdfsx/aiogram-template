@@ -20,11 +20,15 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
             depth += 1
 
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
 
 
 def setup_logger(level: Union[str, int] = "INFO", ignored: List[str] | None = None):
-    logging.basicConfig(handlers=[InterceptHandler()], level=logging.getLevelName(level))
+    logging.basicConfig(
+        handlers=[InterceptHandler()], level=logging.getLevelName(level)
+    )
     if ignored:
         for ignore in ignored:
             logger.disable(ignore)
