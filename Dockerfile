@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster as python-base
+FROM python:3.10-slim-buster as python-base
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -30,5 +30,5 @@ RUN poetry install --no-dev
 FROM python-base as production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 WORKDIR /src
-COPY app /src/app
-CMD ["python", "-O", "-m", "app"]
+COPY src/tgbot /src/tgbot
+CMD ["python", "-O", "-m", "main"]

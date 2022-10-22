@@ -20,3 +20,8 @@ config/*.yaml
 
 # certificates
 *.pem
+
+# .lock files
+*/poetry.lock
+src/*/poetry.lock
+./poetry.lock

@@ -1,2 +1,0 @@
-class BroadcastLockException(Exception):
-    pass
