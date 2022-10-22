@@ -14,6 +14,7 @@ class Config(NamedTuple):
 
     ADMINS = __env.list("ADMIN_ID")
 
+    # Mongo DB
     MONGODB_DATABASE = __env.str("MONGODB_DATABASE")
     MONGODB_USERNAME = __env.str("MONGODB_USERNAME")
     MONGODB_PASSWORD = __env.str("MONGODB_PASSWORD")
@@ -24,3 +25,8 @@ class Config(NamedTuple):
     if MONGODB_USERNAME and MONGODB_PASSWORD:
         MONGODB_URI += f"{MONGODB_USERNAME}:{MONGODB_PASSWORD}@"
     MONGODB_URI += f"{MONGODB_HOSTNAME}:{MONGODB_PORT}"
+
+    # Google Analytics
+    GA_MEASUREMENT_ID = __env.str("GA_MEASUREMENT_ID")
+    GA_API_SECRET = __env.str("GA_API_SECRET")
+    GA_API_URI = f"https://www.google-analytics.com/mp/collect?measurement_id={GA_MEASUREMENT_ID}&api_secret={GA_API_SECRET}"

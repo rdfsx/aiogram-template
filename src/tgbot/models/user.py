@@ -27,7 +27,7 @@ class UserModel(TimeBaseModel):
     username: Optional[str] = Field(default=None)
 
     class Collection:
-        name = "UserModel"
+        name = "Users"
 
     @after_event(Insert)
     async def notify_admins_new_user(self):
@@ -49,12 +49,3 @@ class UserModel(TimeBaseModel):
                     admins, bot.send_photo, False, photo=photo, caption="\n".join(txt)
                 )
             return await broadcast(admins, bot.send_message, False, text="\n".join(txt))
-
-
-async def main():
-    await UserModel.init_model(MyBeanieMongo().get_db(), False)
-    async for user in UserModel.safe_find():
-        print(user)
-
-
-asyncio.run(main())

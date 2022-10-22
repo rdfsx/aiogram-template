@@ -15,7 +15,7 @@ class ChatModel(TimeBaseModel):
     username: Optional[str] = Field(default=None)
 
     class Collection:
-        name = "ChatModel"
+        name = "Chats"
 
     @after_event(Insert)
     async def notify_admins_new_chat(self):

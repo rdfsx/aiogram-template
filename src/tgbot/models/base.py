@@ -1,6 +1,6 @@
 import math
 from datetime import datetime
-from typing import Optional, Union, Mapping, Any, Type, AsyncIterator
+from typing import Any, AsyncIterator, Mapping, Optional, Type, Union
 
 from beanie import Document, Insert, Replace, SaveChanges, before_event
 from beanie.odm.documents import DocType
@@ -19,15 +19,14 @@ class TimeBaseModel(Document):
     async def safe_find(
         cls: Type["DocType"],
         *conditions: Union[Mapping[str, Any], bool],
+        limit: int = 1000,
         sort_by: str = "created_at",
-        limit: int = 100,
+        **kwargs,
     ) -> AsyncIterator["DocType"]:
-        statement = cls.find(*conditions)
-
-        count = await statement.count()
+        count = await cls.find(*conditions, **kwargs).count()
 
         for i in range(math.ceil(count / limit)):
-            async for obj in (
-                statement.sort(sort_by).limit(limit).skip(count if i == 0 else i * limit)
+            async for obj in cls.find(*conditions, **kwargs).sort(sort_by).limit(limit).skip(
+                i * limit
             ):
                 yield obj
