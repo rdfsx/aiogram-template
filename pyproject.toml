@@ -15,6 +15,7 @@ environs = "^9.3.4"
 loguru = "0.6.0"
 aiolimiter = "^1.0.0"
 asgiref = "^3.5.2"
+aiogram-dialog = "2.0.0b11"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"

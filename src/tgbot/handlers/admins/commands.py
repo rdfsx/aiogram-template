@@ -4,7 +4,8 @@ import os
 from datetime import datetime, timedelta
 from typing import Union
 
-from aiofile import async_open
+import aiofiles
+import aiofiles.os
 from aiogram import Bot, Router
 from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.context import FSMContext
@@ -61,9 +62,8 @@ async def get_amount_chats_users(msg: Message, bot: Bot):
 
 async def get_exists_users(m: Message, bot: Bot):
     await m.answer("Начинаем подсчет...")
-    users = await UserModel.find_all().to_list()
     count = 0
-    for user in users:
+    async for user in UserModel.safe_find():
         try:
             if await bot.send_chat_action(user.id, "typing"):
                 user.status = "member"
@@ -81,10 +81,9 @@ async def get_exists_users(m: Message, bot: Bot):
 
 async def write_users_to_file(m: Message):
     await m.answer("Начинаем запись...")
-    users = UserModel.find_all()
     filename = "users.txt"
-    async with async_open(filename, mode="w") as f:
-        async for user in users:
+    async with aiofiles.open(filename, mode="w") as f:
+        async for user in UserModel.safe_find():
             await f.write(f"{user.id}\n")
     await m.answer_document(FSInputFile(filename))
     os.remove(filename)

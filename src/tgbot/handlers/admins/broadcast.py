@@ -35,11 +35,9 @@ async def start_broadcasting(
     info_msg = await msg.answer("Рассылка запущена.")
     await state.clear()
 
-    chats = UserModel.safe_find()
-
     try:
         amount = await broadcast(
-            cast(AsyncGenerator, chats),
+            cast(AsyncGenerator, UserModel.safe_find()),
             send_copy,
             True,
             "id",
