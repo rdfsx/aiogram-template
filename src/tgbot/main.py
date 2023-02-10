@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import signal
 
 from aiogram import Bot, Dispatcher, Router
 
@@ -43,6 +44,13 @@ async def main():
         storage.close()
         await mongo.close()
         logging.warning("Bye!")
+
+
+def handle_sigterm(*args):
+    raise KeyboardInterrupt()
+
+
+signal.signal(signal.SIGTERM, handle_sigterm)
 
 
 if __name__ == "__main__":
