@@ -1,15 +1,15 @@
 import asyncio
 import logging
 
-import handlers
-import middlewares
 from aiogram import Bot, Dispatcher, Router
-from config import Config
-from utils import logger
-from utils.db import MyBeanieMongo
-from utils.db.mongo_storage import MongoStorage
-from utils.set_bot_commands import set_commands
-from utils.startup_notify import notify_superusers
+
+from src.tgbot import handlers, middlewares
+from src.tgbot.config import Config
+from src.tgbot.utils import logger
+from src.tgbot.utils.db import MyBeanieMongo
+from src.tgbot.utils.db.mongo_storage import MongoStorage
+from src.tgbot.utils.set_bot_commands import set_commands
+from src.tgbot.utils.startup_notify import notify_superusers
 
 
 async def main():

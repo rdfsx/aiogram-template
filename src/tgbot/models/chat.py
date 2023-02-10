@@ -14,7 +14,7 @@ class ChatModel(TimeBaseModel):
     type: str = Field(...)
     username: Optional[str] = Field(default=None)
 
-    class Collection:
+    class Settings:
         name = "Chats"
 
     @after_event(Insert)

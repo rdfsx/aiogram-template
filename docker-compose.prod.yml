@@ -11,14 +11,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: $MONGODB_USERNAME
       MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
     volumes:
-      - ./mongo:/var/lib/mongo/data/db
+      - /var/lib/mongo/data/db:/var/lib/mongo/data/db
     networks:
       - botnet
 
   bot:
     container_name: bot-template
     build:
-      context: ./src/tgbot
+      context: ./
     restart: always
     env_file:
       - .env

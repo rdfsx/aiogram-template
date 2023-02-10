@@ -8,7 +8,6 @@ from aiogram.exceptions import TelegramRetryAfter, TelegramUnauthorizedError
 from aiogram.types import Message
 from beanie.odm.operators.update.general import Set
 
-from src.tgbot.models import UserModel
 from src.tgbot.utils.exceptions import CancelBroadcastException
 
 logger = logging.getLogger(__name__)
@@ -67,6 +66,8 @@ async def send_copy(
         count += 1
 
     except Exception as e:
+        from src.tgbot.models import UserModel
+
         await UserModel.find_one(UserModel.id == chat_id).update(Set({UserModel.status: "left"}))
         raise e
 

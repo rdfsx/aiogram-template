@@ -31,4 +31,4 @@ FROM python-base as production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 WORKDIR /src
 COPY src/tgbot /src/tgbot
-CMD ["python", "-O", "-m", "main"]
+CMD ["python", "-O", "-m", "src.tgbot.main"]

@@ -1,7 +1,9 @@
 from typing import AsyncGenerator, cast
 
-from aiogram import Router, types
+from aiogram import F, Router, types
+from aiogram.filters import Command, Text
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State
 from aiogram.types import Message, ReplyKeyboardRemove
 
 from src.tgbot.keyboards.reply import cancel_markup
@@ -54,10 +56,10 @@ async def start_broadcasting(
 
 
 def setup(router: Router):
-    router.message.register(start_broadcast, commands="broadcast")
-    router.message.register(cancel_broadcast, text="Отмена", state=BroadcastAdmin.BROADCAST)
+    router.message.register(start_broadcast, Command("broadcast"))
+    router.message.register(cancel_broadcast, Text("Отмена"), State(BroadcastAdmin.BROADCAST))
     router.message.register(
         start_broadcasting,
-        state=BroadcastAdmin.BROADCAST,
-        content_types=types.ContentType.ANY,
+        State(BroadcastAdmin.BROADCAST),
+        F.content_type.in_({types.ContentType.ANY}),
     )

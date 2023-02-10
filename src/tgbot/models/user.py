@@ -1,4 +1,3 @@
-import asyncio
 from enum import Enum
 from typing import Optional
 
@@ -9,7 +8,6 @@ from pydantic import Field
 from src.tgbot.config import Config
 from src.tgbot.models.base import TimeBaseModel
 from src.tgbot.utils.broadcasting import broadcast, from_iterable
-from src.tgbot.utils.db import MyBeanieMongo
 
 
 class UserRoles(str, Enum):
@@ -26,7 +24,7 @@ class UserModel(TimeBaseModel):
     status: str = "member"
     username: Optional[str] = Field(default=None)
 
-    class Collection:
+    class Settings:
         name = "Users"
 
     @after_event(Insert)

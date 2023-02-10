@@ -8,6 +8,7 @@ import aiofiles
 import aiofiles.os
 from aiogram import Bot, Router
 from aiogram.exceptions import TelegramAPIError
+from aiogram.filters import Command, StateFilter, Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, FSInputFile, Message
 
@@ -100,10 +101,10 @@ async def cancel_all(ctx: Union[CallbackQuery, Message], state: FSMContext):
 
 
 def setup(router: Router):
-    router.message.register(get_amount_users, commands="amount")
-    router.message.register(get_amount_chats, commands="chat_amount")
-    router.message.register(get_amount_chats_users, commands="chat_users_amount")
-    router.message.register(get_exists_users, commands="exists_amount")
-    router.message.register(write_users_to_file, commands="users_file")
-    router.callback_query.register(cancel_all, text="cancel", state="*")
-    router.message.register(cancel_all, commands="/cancel", state="*")
+    router.message.register(get_amount_users, Command("amount"))
+    router.message.register(get_amount_chats, Command("chat_amount"))
+    router.message.register(get_amount_chats_users, Command("chat_users_amount"))
+    router.message.register(get_exists_users, Command("exists_amount"))
+    router.message.register(write_users_to_file, Command("users_file"))
+    router.callback_query.register(cancel_all, Text("cancel"), StateFilter("*"))
+    router.message.register(cancel_all, Command("/cancel"), StateFilter("*"))

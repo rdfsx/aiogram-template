@@ -5,10 +5,10 @@ services:
   bot:
     container_name: bot-template
     build:
-      context: ./src/tgbot
+      context: ./
     restart: always
     env_file:
-      - .env.dev
+      - .env.sample
     volumes:
       - .:/src
     environment:
