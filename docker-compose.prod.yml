@@ -11,7 +11,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: $MONGODB_USERNAME
       MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
     volumes:
-      - /usr/local/mongo/data/db:/user/local/mongo/data/db
+      - ./database:/data/db
     networks:
       - botnet
 

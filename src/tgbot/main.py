@@ -46,14 +46,12 @@ async def main():
         logging.warning("Bye!")
 
 
-def handle_sigterm(*args):
+def handle_sigterm(*_):
     raise KeyboardInterrupt()
 
 
-signal.signal(signal.SIGTERM, handle_sigterm)
-
-
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, handle_sigterm)
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
