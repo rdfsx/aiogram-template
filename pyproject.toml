@@ -16,10 +16,9 @@ loguru = "0.6.0"
 aiolimiter = "^1.0.0"
 asgiref = "^3.5.2"
 aiogram-dialog = "2.0.0b11"
-
-[tool.poetry.dev-dependencies]
-black = "^22.10.0"
+black = "^23.1.0"
 isort = "^5.10.1"
+taskiq = "0.1.8"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
